@@ -1,18 +1,16 @@
 package com.example.dllo.tomatotodo.base;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by dllo on 16/7/16.
- * Activity的基类,不要改动!!
- *
  */
-public abstract class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity extends Activity {
 
     public abstract int initView();
-
+    
     public abstract void initData();
 
     @Override
@@ -21,5 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity{
         setContentView(initView());
         initData();
     }
+
 
 }
