@@ -10,7 +10,6 @@ public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
     private MainAdapter adapter;
 
-
     @Override
     public int initView() {
         return R.layout.activity_main;
