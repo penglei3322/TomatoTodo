@@ -34,20 +34,25 @@
             android:button="@null" />
 
         <ImageView
-            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/logo" />
 
     </RelativeLayout>
 
     <android.support.design.widget.TabLayout
-        android:layout_below="@+id/rl_title"
         android:id="@+id/main_tablayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.design.widget.TabLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_title"></android.support.design.widget.TabLayout>
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/main_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_tablayout"></android.support.v4.view.ViewPager>
 
 </RelativeLayout>

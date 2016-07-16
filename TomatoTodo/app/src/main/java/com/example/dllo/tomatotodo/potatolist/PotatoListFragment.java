@@ -21,7 +21,7 @@ public class PotatoListFragment extends BaseFragment {
 
     @Override
     public int createView() {
-        return 0;
+        return R.layout.fragment_potatolist;
     }
 
     @Override
