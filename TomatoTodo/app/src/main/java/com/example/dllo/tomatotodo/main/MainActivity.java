@@ -1,5 +1,7 @@
 package com.example.dllo.tomatotodo.main;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -10,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
@@ -35,6 +38,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     private CheckBox startCb;
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
+    private NotificationManager notificationManager;
 
 
     @Override
@@ -98,4 +102,6 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         }
     }
+
+
 }
