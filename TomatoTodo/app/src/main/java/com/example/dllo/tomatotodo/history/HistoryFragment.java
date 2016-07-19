@@ -31,7 +31,6 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void initView(View view) {
 
-        historyTab = (TabLayout) view.findViewById(R.id.history_tab);
         historyList = (ListView) view.findViewById(R.id.history_list);
         historyAdapter = new HistoryAdapter(context);
         datas = new ArrayList<>();

@@ -6,6 +6,9 @@ package com.example.dllo.tomatotodo.service;
 public class CountDownEvent {
     private long millisUntilFinished;
 
+    public CountDownEvent() {
+    }
+
     public CountDownEvent(long millisUntilFinished) {
         this.millisUntilFinished = millisUntilFinished;
     }
