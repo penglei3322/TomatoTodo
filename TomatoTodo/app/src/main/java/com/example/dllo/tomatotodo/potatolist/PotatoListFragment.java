@@ -1,15 +1,14 @@
 package com.example.dllo.tomatotodo.potatolist;
 
-import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.AttributeSet;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -31,6 +30,8 @@ public class PotatoListFragment extends BaseFragment {
     private LinearLayout addLinearLayout;
     private PopupWindow popupWindow;
     private List<String> datas;
+    private CheckBox finishCb, toTpCb;
+    private RecyclerView recyclerView;
 
     @Override
     public int createView() {
@@ -59,15 +60,34 @@ public class PotatoListFragment extends BaseFragment {
                         EditText editText = (EditText) popupView.findViewById(R.id.add_et);
                         addLinearLayout.setVisibility(View.VISIBLE);
                         String number = editText.getText().toString();
-                        Log.d("PotatoListFragment", number + "");
-                        datas.add(number + "");
+                        if (number.length() != 0) {
+                            datas.add(number);
+                        }
+
                         listView.setAdapter(new CommonAdapter<String>(context, datas, R.layout.item_potatolist_fragment) {
                             @Override
-                            public void convert(ViewHolder holder, String s) {
+                            public void convert(final ViewHolder holder, final String s) {
                                 holder.setText(R.id.item_potatolist_tv, s);
+                                finishCb = holder.getView(R.id.item_potatolist_finish_checkbox);
+                                toTpCb = holder.getView(R.id.item_potatolist_totop_checkbox);
+                                finishCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        toTpCb = holder.getView(R.id.item_potatolist_totop_checkbox);
+                                        if (isChecked) {
+
+                                            toTpCb.setVisibility(View.INVISIBLE);
+                                            holder.setTextColor(R.id.item_potatolist_tv, Color.GRAY);
+                                        } else {
+                                            toTpCb.setVisibility(View.VISIBLE);
+                                            holder.setTextColor(R.id.item_potatolist_tv, Color.BLACK);
+                                        }
+                                    }
+                                });
+
+
                             }
                         });
-
                     }
                 });
                 popupWindow.setContentView(popupView);
@@ -76,8 +96,10 @@ public class PotatoListFragment extends BaseFragment {
                 popupWindow.setTouchable(true);
                 popupWindow.setBackgroundDrawable(new BitmapDrawable());
                 popupWindow.showAsDropDown(popupView, 0, 0);
+
             }
         });
+
     }
 
     @Override

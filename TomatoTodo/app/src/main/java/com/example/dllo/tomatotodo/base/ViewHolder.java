@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -65,7 +66,18 @@ public class ViewHolder {
         tv.setText(text);
         return this;
     }
+    // 改变字体颜色
+    public ViewHolder setTextColor(int viewId,int color){
+        TextView tv=getView(viewId);
+        tv.setTextColor(color);
+        return this;
+    }
 
+    public ViewHolder setChecked(int viewId,boolean isChecked){
+        CheckBox checkBox=getView(viewId);
+        checkBox.setChecked(isChecked);
+        return this;
+    }
     // 添加图片
     public ViewHolder setImgResource(int viewId, int resId) {
         ImageView imageView = getView(viewId);
