@@ -38,8 +38,6 @@ public class HistoryFragment extends BaseFragment {
 
     @Override
     public void initData() {
-
-
         map = new HashMap<>();
         map.put(1, "一月");
         map.put(2, "二月");
