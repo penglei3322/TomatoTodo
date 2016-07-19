@@ -1,6 +1,7 @@
 package com.example.dllo.tomatotodo.history;
 
 import android.support.design.widget.TabLayout;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.ListView;
 
@@ -8,6 +9,7 @@ import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ import java.util.List;
 public class HistoryFragment extends BaseFragment {
 
     private TabLayout historyTab;
-    private String[] tabNames = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
+    private HashMap<Integer, String> map;
     private ListView historyList;
     private HistoryAdapter historyAdapter;
     private ArrayList<String> datas;
@@ -38,9 +40,20 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void initData() {
 
-        for (int i = 0; i < tabNames.length; i++) {
-            historyTab.addTab(historyTab.newTab().setText(tabNames[i]));
-        }
+
+        map = new HashMap<>();
+        map.put(1, "一月");
+        map.put(2, "二月");
+        map.put(3, "三月");
+        map.put(4, "四月");
+        map.put(5, "五月");
+        map.put(6, "六月");
+        map.put(7, "七月");
+        map.put(8, "八月");
+        map.put(9, "九月");
+        map.put(10, "十月");
+        map.put(11, "十一月");
+        map.put(12, "十二月");
 
         ArrayList<HistoryBean> datas = (ArrayList<HistoryBean>) buildLocalDatas();
         historyAdapter.setHistoryBeen(datas);
