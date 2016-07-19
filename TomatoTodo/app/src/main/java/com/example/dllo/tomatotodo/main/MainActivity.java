@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
+import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
@@ -54,6 +55,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         startCb = (CheckBox) findViewById(R.id.title_action_checkbox);
         fragments = new ArrayList<>();
         fragments.add(new PotatoListFragment());
+        fragments.add(new HistoryFragment());
         fragments.add(new StatisticsFragment());
         adapter.setFragments(fragments);
         viewPager.setAdapter(adapter);
