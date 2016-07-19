@@ -76,7 +76,6 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
             case R.id.tv_left_fragment_statics:
                 dates--;
                 tvRight.setVisibility(View.VISIBLE);
-                Log.d("dateLeft",dates + "-");
                 //当点击到一月份时候,让TextView可以重新循环整个map
                 if (dates == 0) {
                     dates = 12;
@@ -84,10 +83,16 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
                 tvRight.setText(tvCenter.getText().toString());
                 //当点击左侧按钮时,把左侧按钮中的值赋给中间按钮
                 tvCenter.setText(tvLeft.getText().toString());
-                tvLeft.setText(map.get(dates));
+                //根据key判断
+                int keyLeft = dates % 12;
+                if (keyLeft != 0) {
+                    tvLeft.setText(map.get(dates % 12));
+                } else {
+                    tvLeft.setText(map.get(12));
+                }
                 //每当点击一次左侧按钮,记录一次
                 temp++;
-                Log.d("tempLeft",temp + "-");
+                Log.d("tempLeft", temp + "-");
                 break;
 
             case R.id.tv_center_fragment_statics:
@@ -95,29 +100,36 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
                 break;
 
             case R.id.tv_right_fragment_statics:
-                Log.d("tempRight",temp + "-");
+                Log.d("tempRight", temp + "-");
                 //首先判断点击的temp次数,如果为0,则拦截点击事件
                 if (temp == 0) {
                     tvRight.setVisibility(View.INVISIBLE);
+                    tvCenter.setText("过去三十天");
+                    int keyTemp = dates % 12;
+                    if (keyTemp != 0) {
+                        tvLeft.setText(map.get(keyTemp));
+                    }else {
+                        tvLeft.setText(map.get(12));
+                    }
                     return;
                 }
                 dates++;
-                if (temp == 1){
+                if (temp == 1) {
                     tvLeft.setText(tvCenter.getText().toString());
                     tvCenter.setText(tvRight.getText().toString());
                     tvRight.setText("过去三十天");
-
-
-                }else if (temp == 2){
-
+                } else if (temp == 2) {
 
 
                 } else {
-                    Log.d("dates", dates + "月");
                     tvLeft.setText(tvCenter.getText().toString());
                     tvCenter.setText(tvRight.getText().toString());
-                    tvRight.setText(map.get(dates));
-
+                    int keyRight = (dates + 2) % 12;
+                    if (keyRight != 0) {
+                        tvRight.setText(map.get(keyRight));
+                    } else {
+                        tvRight.setText(map.get(12));
+                    }
                 }
                 temp--;
                 break;

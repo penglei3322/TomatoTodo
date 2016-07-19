@@ -30,8 +30,6 @@ public class HistoryFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
-
-        historyTab = (TabLayout) view.findViewById(R.id.history_tab);
         historyList = (ListView) view.findViewById(R.id.history_list);
         historyAdapter = new HistoryAdapter(context);
         datas = new ArrayList<>();
@@ -39,8 +37,6 @@ public class HistoryFragment extends BaseFragment {
 
     @Override
     public void initData() {
-
-
         map = new HashMap<>();
         map.put(1, "一月");
         map.put(2, "二月");
