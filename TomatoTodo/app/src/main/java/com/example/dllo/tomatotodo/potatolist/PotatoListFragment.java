@@ -1,6 +1,7 @@
 package com.example.dllo.tomatotodo.potatolist;
 
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.PopupWindow;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
+import com.example.dllo.tomatotodo.base.CommonAdapter;
 import com.example.dllo.tomatotodo.base.ListViewAdapter;
 import com.example.dllo.tomatotodo.base.ViewHolder;
 
@@ -27,6 +29,7 @@ public class PotatoListFragment extends BaseFragment {
     private LinearLayout addLinearLayout;
     private PopupWindow popupWindow;
     private List<String> datas;
+    private RecyclerView recyclerView;
 
     @Override
     public int createView() {
@@ -35,7 +38,7 @@ public class PotatoListFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
-        listView = (ListView) view.findViewById(R.id.fragment_potatolist_listview);
+        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_potatolist_listview);
         addLinearLayout = (LinearLayout) view.findViewById(R.id.fragment_potatolist_add_linearlayout);
         datas = new ArrayList<>();
         addLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -55,14 +58,8 @@ public class PotatoListFragment extends BaseFragment {
                         EditText editText = (EditText) popupView.findViewById(R.id.add_et);
                         addLinearLayout.setVisibility(View.VISIBLE);
                         String number = editText.getText().toString();
-                        Log.d("PotatoListFragment", number + "");
                         datas.add(number + "");
-                        listView.setAdapter(new ListViewAdapter<String>(context, datas, R.layout.item_potatolist_fragment) {
-                            @Override
-                            public void convert(ViewHolder holder, String s) {
-                                holder.setText(R.id.item_potatolist_tv, s);
-                            }
-                        });
+
 
                     }
                 });
