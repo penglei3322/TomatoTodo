@@ -75,6 +75,7 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.tv_left_fragment_statics:
                 dates--;
+                tvRight.setVisibility(View.VISIBLE);
                 Log.d("dateLeft",dates + "-");
                 //当点击到一月份时候,让TextView可以重新循环整个map
                 if (dates == 0) {
@@ -94,8 +95,10 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
                 break;
 
             case R.id.tv_right_fragment_statics:
+                Log.d("tempRight",temp + "-");
                 //首先判断点击的temp次数,如果为0,则拦截点击事件
                 if (temp == 0) {
+                    tvRight.setVisibility(View.INVISIBLE);
                     return;
                 }
                 dates++;
@@ -103,16 +106,20 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
                     tvLeft.setText(tvCenter.getText().toString());
                     tvCenter.setText(tvRight.getText().toString());
                     tvRight.setText("过去三十天");
-                    temp--;
 
-                }else {
+
+                }else if (temp == 2){
+
+
+
+                } else {
                     Log.d("dates", dates + "月");
                     tvLeft.setText(tvCenter.getText().toString());
                     tvCenter.setText(tvRight.getText().toString());
                     tvRight.setText(map.get(dates));
-                    temp--;
-                }
 
+                }
+                temp--;
                 break;
 
 
