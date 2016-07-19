@@ -2,16 +2,13 @@ package com.example.dllo.tomatotodo.potatolist;
 
 
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,9 +16,6 @@ import android.widget.PopupWindow;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
-import com.example.dllo.tomatotodo.base.CommonAdapter;
-import com.example.dllo.tomatotodo.base.ListViewAdapter;
-import com.example.dllo.tomatotodo.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
