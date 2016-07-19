@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
+import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class MainActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.main_viewpager);
         fragments = new ArrayList<>();
         fragments.add(new PotatoListFragment());
+        fragments.add(new HistoryFragment());
         adapter.setFragments(fragments);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

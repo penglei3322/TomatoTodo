@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_history_layout_height"
+    android:background="@color/colorHistoryDataLayout">
+
+    <TextView
+        android:id="@+id/item_history_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/item_history_marginRight_Lift"
+        android:text="@string/data"
+        android:textColor="@color/colorHistoryDataLayoutTextColor"
+        android:textSize="@dimen/item_history_text_size" />
+
+    <TextView
+        android:id="@+id/item_history_weeks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/item_history_margin"
+        android:layout_toRightOf="@id/item_history_data"
+        android:text="@string/weeks"
+        android:textColor="@color/colorHistoryDataLayoutTextColor"
+        android:textSize="@dimen/item_history_text_size" />
+
+    <ImageView
+        android:id="@+id/item_history_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/item_history_marginRight_Lift"
+        android:src="@mipmap/ic_pomo_small" />
+
+    <TextView
+        android:id="@+id/item_history_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/item_history_margin"
+        android:layout_toLeftOf="@id/item_history_iv"
+        android:text="@string/number"
+        android:textColor="@color/colorHistoryDataLayoutTextColor"
+        android:textSize="@dimen/item_history_text_size" />
+
+</RelativeLayout>

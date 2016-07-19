@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TomatoTodo</string>
+    <string name="data">data</string>
+    <string name="weeks">weeks</string>
+    <string name="number">number</string>
+    <string name="firstTime">FirstTime</string>
+    <string name="lastTime">LastTime</string>
+    <string name="name">name</string>
 </resources>

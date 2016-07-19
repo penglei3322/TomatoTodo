@@ -1,23 +1,18 @@
 package com.example.dllo.tomatotodo.potatolist;
 
-import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
-import com.example.dllo.tomatotodo.base.CommonAdapter;
-import com.example.dllo.tomatotodo.base.ViewHolder;
+import com.example.dllo.tomatotodo.base.ListViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +56,7 @@ public class PotatoListFragment extends BaseFragment {
                         String number = editText.getText().toString();
                         Log.d("PotatoListFragment", number + "");
                         datas.add(number + "");
-                        listView.setAdapter(new CommonAdapter<String>(context, datas, R.layout.item_potatolist_fragment) {
+                        listView.setAdapter(new ListViewAdapter<String>(context, datas, R.layout.item_potatolist_fragment) {
                             @Override
                             public void convert(ViewHolder holder, String s) {
                                 holder.setText(R.id.item_potatolist_tv, s);
