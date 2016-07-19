@@ -62,7 +62,7 @@ public class TomatoService extends Service {
 
     public void countDown(){
 //        int duration = myBinder.getDuration();
-        countDownTimer = new CountDownTimer(25 * 60 * 1000,1000) {
+        countDownTimer = new CountDownTimer(1 * 60 * 1000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 EventBus.getDefault().post(new CountDownEvent(millisUntilFinished));
@@ -71,7 +71,7 @@ public class TomatoService extends Service {
 
             @Override
             public void onFinish() {
-
+                EventBus.getDefault().post(new CountDownEvent(-1));
             }
         }.start();
 
