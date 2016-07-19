@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
@@ -17,6 +18,7 @@ import com.example.dllo.tomatotodo.base.BaseActivity;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
+import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,6 +54,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         startCb = (CheckBox) findViewById(R.id.title_action_checkbox);
         fragments = new ArrayList<>();
         fragments.add(new PotatoListFragment());
+        fragments.add(new StatisticsFragment());
         adapter.setFragments(fragments);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
