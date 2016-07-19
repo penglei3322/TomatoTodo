@@ -13,8 +13,12 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+<<<<<<< HEAD
 import android.view.animation.AlphaAnimation;
 import android.widget.Checkable;
+=======
+import android.widget.CheckBox;
+>>>>>>> feature/gzs-list
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -90,7 +94,14 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         tv.setText(text);
         return this;
     }
+    // 改变字体颜色
+    public ViewHolder setTextColor(int viewId,int color){
+        TextView tv=getView(viewId);
+        tv.setTextColor(color);
+        return this;
+    }
 
+<<<<<<< HEAD
     public ViewHolder setImageResource(int viewId, int resId) {
         ImageView view = getView(viewId);
         view.setImageResource(resId);
@@ -184,6 +195,17 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public ViewHolder setMax(int viewId, int max) {
         ProgressBar view = getView(viewId);
         view.setMax(max);
+=======
+    public ViewHolder setChecked(int viewId,boolean isChecked){
+        CheckBox checkBox=getView(viewId);
+        checkBox.setChecked(isChecked);
+        return this;
+    }
+    // 添加图片
+    public ViewHolder setImgResource(int viewId, int resId) {
+        ImageView imageView = getView(viewId);
+        imageView.setImageResource(resId);
+>>>>>>> feature/gzs-list
         return this;
     }
 

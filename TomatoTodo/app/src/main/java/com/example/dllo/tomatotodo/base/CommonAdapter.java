@@ -110,12 +110,20 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<ViewHolder> 
         convert(holder, mDatas.get(position));
     }
 
+<<<<<<< HEAD
     //设置数据时用到的方法
     public abstract void convert(ViewHolder holder, T t);
 
     @Override
     public int getItemCount() {
         return mDatas == null ? 0 : mDatas.size();
+=======
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder = ViewHolder.get(mContext, convertView, parent, itemLayoutId, position);
+        convert(holder, getItem(position));
+        return holder.getmConvertView();
+>>>>>>> feature/gzs-list
     }
 
 
