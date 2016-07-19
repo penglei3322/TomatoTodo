@@ -119,8 +119,6 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 showDelAlert();
                 startCb.setChecked(true);
             }
-
-
         }
     }
 
