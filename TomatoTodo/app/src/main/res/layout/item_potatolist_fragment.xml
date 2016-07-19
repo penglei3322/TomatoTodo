@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,17 +11,19 @@
         android:orientation="horizontal">
 
         <CheckBox
+            android:id="@+id/item_potatolist_finish_checkbox"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:focusable="false"
             android:background="@drawable/potatolist_fragment_add_checked"
-            android:button="@null"
-            android:layout_gravity="center_vertical"/>
+            android:button="@null" />
 
 
         <TextView
             android:id="@+id/item_potatolist_tv"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:gravity="center"
@@ -29,11 +31,13 @@
             android:textColor="#000000"
             android:textSize="20sp" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <CheckBox
+            android:id="@+id/item_potatolist_totop_checkbox"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="false"
             android:layout_marginRight="10dp"
-            android:background="@drawable/potatolist_fragment_add_checked" />
-
+            android:background="@drawable/potatolist_fragment_top"
+            android:button="@null" />
     </LinearLayout>
 </LinearLayout>

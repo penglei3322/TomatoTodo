@@ -1,11 +1,15 @@
 package com.example.dllo.tomatotodo.potatolist;
 
+
 import android.graphics.drawable.BitmapDrawable;
+
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -13,9 +17,7 @@ import android.widget.PopupWindow;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
-import com.example.dllo.tomatotodo.base.CommonAdapter;
-import com.example.dllo.tomatotodo.base.ListViewAdapter;
-import com.example.dllo.tomatotodo.base.ViewHolder;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,9 @@ public class PotatoListFragment extends BaseFragment {
     private LinearLayout addLinearLayout;
     private PopupWindow popupWindow;
     private List<String> datas;
+
+    private CheckBox finishCb, toTpCb;
+
     private RecyclerView recyclerView;
 
     @Override
@@ -58,7 +63,9 @@ public class PotatoListFragment extends BaseFragment {
                         EditText editText = (EditText) popupView.findViewById(R.id.add_et);
                         addLinearLayout.setVisibility(View.VISIBLE);
                         String number = editText.getText().toString();
+
                         datas.add(number + "");
+
 
 
                     }
@@ -70,7 +77,11 @@ public class PotatoListFragment extends BaseFragment {
                 popupWindow.setBackgroundDrawable(new BitmapDrawable());
                 popupWindow.showAsDropDown(popupView, 0, 0);
             }
+
         });
+
+
+
     }
 
     @Override
