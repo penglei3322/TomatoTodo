@@ -1,80 +1,59 @@
-package com.example.dllo.tomatotodo.main;
+package com.example.dllo.tomatotodo.countdowndetail;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
-import com.example.dllo.tomatotodo.countdowndetail.CountdownDetailActivity;
-import com.example.dllo.tomatotodo.history.HistoryFragment;
-import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
-import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+/**
+ * Created by zly on 16/7/20.
+ */
+public class CountdownDetailActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
 
-    private TabLayout tabLayout;
-    private MainAdapter adapter;
-    private ArrayList<Fragment> fragments;
-    private ViewPager viewPager;
-    private TextView titleTimer;
+    private ProgressView progressView;
+    private TextView timeTv;
     private CheckBox startCb;
+    private boolean isShowing;
+
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
-    private NotificationManager notificationManager;
-    private boolean isShowing = false;
-
 
     @Override
     public int initView() {
         EventBus.getDefault().register(this);
-        return R.layout.activity_main;
+        return R.layout.activity_countdown_detail;
     }
 
     @Override
     public void initData() {
-        tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
-        adapter = new MainAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        titleTimer = (TextView) findViewById(R.id.title_timer);
-        startCb = (CheckBox) findViewById(R.id.title_action_checkbox);
-        fragments = new ArrayList<>();
-        fragments.add(new PotatoListFragment());
-        fragments.add(new HistoryFragment());
-        fragments.add(new StatisticsFragment());
-        adapter.setFragments(fragments);
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+        progressView = (ProgressView) findViewById(R.id.coutdown_detail_progress_view);
+        timeTv = (TextView) findViewById(R.id.countdown_detail_time_tv);
+        startCb = (CheckBox) findViewById(R.id.countdown_detail_play);
 
-        titleTimer.setOnClickListener(this);
+        startCb.setOnCheckedChangeListener(this);
+
 
         // 绑定服务
         Intent serviceIntent = new Intent(this, TomatoService.class);
-        startService(serviceIntent);
         serviceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
@@ -91,33 +70,8 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         };
         bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
 
-        startCb.setOnCheckedChangeListener(this);
-
-        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-        int workTime = sharedPreferences.getInt("workTime",25);
-        titleTimer.setText(workTime + ":00");
 
 
-
-    }
-
-    @Subscribe
-    public void setTitleTimer(CountDownEvent countDownEvent) {
-        if (countDownEvent.getMillisUntilFinished() == -1) {
-            titleTimer.setText("番茄已完成");
-        } else {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-            String time = simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished()));
-            titleTimer.setText(time);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (myBinder.isTick()){
-            startCb.setChecked(true);
-        }
     }
 
     @Override
@@ -127,7 +81,19 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         EventBus.getDefault().unregister(this);
     }
 
-    // checkBox状态监听
+
+    @Subscribe
+    public void setProgress(CountDownEvent countDownEvent){
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
+        int time = sharedPreferences.getInt("workTime", 25);
+        float seconds = time * 60 - countDownEvent.getMillisUntilFinished() / 1000;
+        float progress = 360 * seconds / (time * 60);
+        progressView.setProgress(progress);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+        timeTv.setText(simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished())));
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
@@ -142,7 +108,6 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         }
     }
 
-
     // 显示dialog
     public void showDelAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -154,7 +119,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 myBinder.cancelCountDown();
                 SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
                 int workTime = sharedPreferences.getInt("workTime",25);
-                titleTimer.setText(workTime + ":00");
+                timeTv.setText(workTime + ":00");
                 isShowing = true;
                 startCb.setChecked(false);
                 isShowing = false;
@@ -162,16 +127,5 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         });
         builder.setNegativeButton("取消", null);
         builder.show();
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.title_timer:
-                Intent intent = new Intent(MainActivity.this, CountdownDetailActivity.class);
-                startActivity(intent);
-                break;
-        }
     }
 }
