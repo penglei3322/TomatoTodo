@@ -31,9 +31,7 @@ public class PotatoListFragment extends BaseFragment {
     private LinearLayout addLinearLayout;
     private PopupWindow popupWindow;
     private List<String> datas;
-
     private CheckBox finishCb, toTpCb;
-
     private RecyclerView recyclerView;
 
     @Override
