@@ -8,4 +8,6 @@
     <dimen name="item_history_text_size">20dp</dimen>
     <dimen name="item_history_time_text_size">15dp</dimen>
     <dimen name="item_history_time_layout_height">55dp</dimen>
+    <dimen name="item_history_view_height">3dp</dimen>
+    <dimen name="item_history_view_height_top_bottom">1dp</dimen>
 </resources>

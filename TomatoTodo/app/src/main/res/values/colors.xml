@@ -3,6 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorHistory">#EDEDED</color>
+    <color name="colorHistoryView">#DA1D32</color>
+    <color name="colorHistoryViewTopBottom">#DEDEDE</color>
     <color name="colorHistoryDataLayout">#F4F4F4</color>
     <color name="colorHistoryDataLayoutTextColor">#B3B3B3</color>
     <color name="colorHistoryTimeLayoutFirstTextColor">#989898</color>
