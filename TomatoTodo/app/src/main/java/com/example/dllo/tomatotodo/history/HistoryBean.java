@@ -1,23 +1,31 @@
 package com.example.dllo.tomatotodo.history;
 
+import java.util.ArrayList;
+
 /**
  * Created by dllo on 16/7/19.
  */
 public class HistoryBean {
 
-    private String historyData, historyWeeks, historyNumber, historyFirstTime, historyLastTime, historyName, type;
+    private String historyData, historyWeeks, historyNumber, historyFirstTime, historyLastTime, historyName;
+    private String type;
 
-    public HistoryBean(String historyData, String historyWeeks, String historyNumber, String historyFirstTime, String historyLastTime, String historyName, String type) {
+    public HistoryBean() {
+    }
+
+    public HistoryBean(String historyData, String historyWeeks, String historyNumber) {
         this.historyData = historyData;
         this.historyWeeks = historyWeeks;
         this.historyNumber = historyNumber;
+        this.type = "0";
+    }
+
+    public HistoryBean(String historyFirstTime, String historyLastTime, String historyName, String type) {
         this.historyFirstTime = historyFirstTime;
         this.historyLastTime = historyLastTime;
         this.historyName = historyName;
         this.type = type;
-    }
 
-    public HistoryBean() {
     }
 
     public String getHistoryData() {
@@ -72,7 +80,7 @@ public class HistoryBean {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType (String type) {
         this.type = type;
     }
 }
