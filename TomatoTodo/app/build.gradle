@@ -28,4 +28,5 @@ dependencies {
     compile 'com.sch.rfview:AnimRefreshRecyclerView:1.0.6@aar'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile project(':pull')
+    compile files('libs/lite-orm-1.9.1.jar')
 }
