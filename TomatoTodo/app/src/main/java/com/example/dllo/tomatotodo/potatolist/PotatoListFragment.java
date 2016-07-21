@@ -52,7 +52,6 @@ public class PotatoListFragment extends BaseFragment {
     private PopupWindow popupWindow;
     private List<String> datas;
     private CheckBox finishCb, toTpCb;
-<<<<<<< HEAD
     private RecyclerView mRecyclerView;
     private RecyclerViewCommonAdapter<String> adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -62,9 +61,9 @@ public class PotatoListFragment extends BaseFragment {
     float y1 = 0;
     float y2 = 0;
 
-=======
+
     private RecyclerView recyclerView;
->>>>>>> 34188cc88a2014174ab0d1b3580fb92e0500e624
+
 
     @Override
     public int createView() {

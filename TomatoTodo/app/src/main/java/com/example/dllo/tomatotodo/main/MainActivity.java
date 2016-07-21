@@ -112,7 +112,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         }
     }
 
-<<<<<<< HEAD
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -120,9 +120,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 //            startCb.setChecked(true);
 //        }
     }
-=======
 
->>>>>>> 34188cc88a2014174ab0d1b3580fb92e0500e624
 
     @Override
     protected void onDestroy() {
