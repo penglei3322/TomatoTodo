@@ -113,6 +113,14 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        if (myBinder.isTick()){
+//            startCb.setChecked(true);
+//        }
+    }
+
 
     @Override
     protected void onDestroy() {

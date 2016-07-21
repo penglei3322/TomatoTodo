@@ -15,10 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".potatolist.activity.PotatoListDetailActivity" />
 
         <activity android:name=".countdowndetail.CountdownDetailActivity"/>
 
-        <service android:name=".service.TomatoService"/>
+        <service android:name=".service.TomatoService" />
     </application>
 
 </manifest>

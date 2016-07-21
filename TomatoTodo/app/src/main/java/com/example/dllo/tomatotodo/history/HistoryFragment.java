@@ -39,7 +39,6 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void initView(View view) {
-
         historyList = (ListView) view.findViewById(R.id.history_list);
         leftTv = (TextView) view.findViewById(R.id.history_left_tv);
         centerTv = (TextView) view.findViewById(R.id.history_center_tv);
