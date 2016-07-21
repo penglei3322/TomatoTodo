@@ -219,15 +219,11 @@ public class PotatoListFragment extends BaseFragment {
                     if (y1 - y2 > 70) {
                         Toast.makeText(context, "向上", Toast.LENGTH_SHORT).show();
                         Log.d("PotatoListFragment", "加载");
-                        if (y1 - y2 > 35) {
-                            footerLinearLayout.setVisibility(View.VISIBLE);
-                        } else if (y1 - y2 > 70) {
-                            footerLinearLayout.setVisibility(View.GONE);
-                            Intent intent = new Intent(context, PotatoListDetailActivity.class);
-                            context.startActivity(intent);
-                        }
+                        Intent intent = new Intent(context, PotatoListDetailActivity.class);
+                        context.startActivity(intent);
+
                     } else if (y2 - y1 > 50) {
-                        Toast.makeText(context, "xiangxia", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "向下", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return false;

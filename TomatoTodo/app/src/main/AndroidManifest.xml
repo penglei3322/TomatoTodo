@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".potatolist.activity.PotatoListDetailActivity" />
 
+        <activity android:name=".countdowndetail.CountdownDetailActivity"/>
 
         <service android:name=".service.TomatoService" />
     </application>
