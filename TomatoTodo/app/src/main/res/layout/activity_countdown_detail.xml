@@ -68,8 +68,15 @@
                 android:layout_centerInParent="true"
                 android:button="@null"
                 android:background="@drawable/action_play_red_selector"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <ImageView
+                android:id="@+id/countdown_detail_accept_iv"
+                android:src="@mipmap/widget_action_accept_red"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
         </RelativeLayout>
 
@@ -81,6 +88,12 @@
             android:text="25:00"
             android:layout_margin="5dp"
             android:textSize="25sp" />
+        <TextView
+            android:id="@+id/countdown_detail_time_msg"
+            android:layout_gravity="center_horizontal"
+            android:alpha="0.7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <ListView

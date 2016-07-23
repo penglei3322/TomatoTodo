@@ -8,8 +8,10 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
@@ -20,6 +22,7 @@ import com.example.dllo.tomatotodo.service.TomatoService;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,12 +30,14 @@ import java.util.Date;
 /**
  * Created by zly on 16/7/20.
  */
-public class CountdownDetailActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class CountdownDetailActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private ProgressView progressView;
     private TextView timeTv;
     private CheckBox startCb;
     private boolean isShowing;
+    private ImageView acceptBtn;
+    private TextView timeMsg;
 
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
@@ -48,8 +53,11 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
         progressView = (ProgressView) findViewById(R.id.coutdown_detail_progress_view);
         timeTv = (TextView) findViewById(R.id.countdown_detail_time_tv);
         startCb = (CheckBox) findViewById(R.id.countdown_detail_play);
+        acceptBtn = (ImageView) findViewById(R.id.countdown_detail_accept_iv);
+        timeMsg = (TextView) findViewById(R.id.countdown_detail_time_msg);
 
         startCb.setOnCheckedChangeListener(this);
+        acceptBtn.setOnClickListener(this);
 
 
         // 绑定服务
@@ -88,12 +96,23 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
         int time = sharedPreferences.getInt("workTime", 25);
         float seconds = time * 60 - countDownEvent.getMillisUntilFinished() / 1000;
         float progress = 360 * seconds / (time * 60);
-        progressView.setProgress(progress);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-        timeTv.setText(simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished())));
+        if (countDownEvent.getMillisUntilFinished() > 0) {
+            progressView.setProgress(progress);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+            timeTv.setText(simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished())));
+        } else {
+            timeTv.setText("番茄已完成");
+            timeMsg.setText("点击以提交");
+            startCb.setVisibility(View.GONE);
+            acceptBtn.setVisibility(View.VISIBLE);
+        }
     }
 
+    public void initProgress(){
+
+    }
+
+    // checkBox状态监听
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
@@ -123,9 +142,17 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
                 isShowing = true;
                 startCb.setChecked(false);
                 isShowing = false;
+                progressView.setProgress(0);
             }
         });
         builder.setNegativeButton("取消", null);
         builder.show();
+    }
+
+
+    // accept监听
+    @Override
+    public void onClick(View v) {
+
     }
 }

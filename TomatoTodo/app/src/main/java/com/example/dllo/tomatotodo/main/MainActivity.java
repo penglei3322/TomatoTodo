@@ -1,6 +1,5 @@
 package com.example.dllo.tomatotodo.main;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -12,11 +11,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
@@ -43,13 +42,16 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     private ViewPager viewPager;
     private TextView titleTimer;
     private CheckBox startCb;
+    private ImageView acceptBtn;
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
     private NotificationManager notificationManager;
     private boolean isShowing = false;
+    private boolean isActive;
 
 
     @Override
+
     public int initView() {
         EventBus.getDefault().register(this);
         return R.layout.activity_main;
@@ -62,6 +64,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         viewPager = (ViewPager) findViewById(R.id.main_viewpager);
         titleTimer = (TextView) findViewById(R.id.title_timer);
         startCb = (CheckBox) findViewById(R.id.title_action_checkbox);
+        acceptBtn = (ImageView) findViewById(R.id.title_action_accept);
         fragments = new ArrayList<>();
         fragments.add(new PotatoListFragment());
         fragments.add(new HistoryFragment());
@@ -79,7 +82,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 myBinder = (TomatoService.MyBinder) service;
-                if (myBinder.isTick()){
+                if (myBinder.isTick()) {
                     startCb.setChecked(true);
                 }
             }
@@ -93,32 +96,37 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         startCb.setOnCheckedChangeListener(this);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-        int workTime = sharedPreferences.getInt("workTime",25);
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+        int workTime = sharedPreferences.getInt("workTime", 25);
         titleTimer.setText(workTime + ":00");
-
 
 
     }
 
     @Subscribe
     public void setTitleTimer(CountDownEvent countDownEvent) {
-        if (countDownEvent.getMillisUntilFinished() == -1) {
-            titleTimer.setText("番茄已完成");
-        } else {
+        if (countDownEvent.getMillisUntilFinished() > 0) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
             String time = simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished()));
             titleTimer.setText(time);
+            startCb.setChecked(true);
+        } else {
+            titleTimer.setText("番茄已完成");
+            acceptBtn.setVisibility(View.VISIBLE);
+            startCb.setVisibility(View.GONE);
         }
     }
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-//        if (myBinder.isTick()){
-//            startCb.setChecked(true);
-//        }
+    protected void onResume() {
+        super.onResume();
+        if (isActive) {
+            if (myBinder.isTick()) {
+                startCb.setChecked(true);
+            }
+        }
+        isActive = true;
     }
 
 
@@ -127,6 +135,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         super.onDestroy();
         unbindService(serviceConnection);
         EventBus.getDefault().unregister(this);
+        isActive = false;
     }
 
     // checkBox状态监听
@@ -137,7 +146,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 myBinder.startCountDown();
             }
         } else {
-            if (isShowing == false){
+            if (isShowing == false) {
                 showDelAlert();
                 startCb.setChecked(true);
             }
@@ -154,8 +163,8 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 myBinder.cancelCountDown();
-                SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-                int workTime = sharedPreferences.getInt("workTime",25);
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
                 titleTimer.setText(workTime + ":00");
                 isShowing = true;
                 startCb.setChecked(false);
@@ -169,10 +178,13 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.title_timer:
                 Intent intent = new Intent(MainActivity.this, CountdownDetailActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.title_action_accept:
+
                 break;
         }
     }

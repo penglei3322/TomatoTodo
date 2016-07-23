@@ -69,7 +69,6 @@ public class ProgressView extends View  {
         canvas.drawCircle(length / 2, length / 2, length / 2 - 20, paintWhite);
 
 
-
     }
 
 }

@@ -32,6 +32,15 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/action_checkbox"
             android:button="@null" />
+        <ImageView
+            android:id="@+id/title_action_accept"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:src="@mipmap/widget_action_accept_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <ImageView
             android:layout_width="wrap_content"
