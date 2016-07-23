@@ -8,9 +8,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.dllo.tomatotodo.R;
+import com.example.dllo.tomatotodo.base.BaseActivity;
 import com.example.dllo.tomatotodo.preferences.shieldingapplications.ShieldingApplicationsActivity;
 
-public class PreferencesActivity extends AppCompatActivity implements View.OnClickListener {
+public class PreferencesActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView returnIv;
     private int ids[] = {R.id.preferences_account, R.id.preferences_expiry_data, R.id.preferences_wifi_switch,
@@ -20,9 +21,12 @@ public class PreferencesActivity extends AppCompatActivity implements View.OnCli
     private LinearLayout accountLayout, loginLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preferences);
+    public int initView() {
+        return R.layout.activity_preferences;
+    }
+
+    @Override
+    public void initData() {
 
         returnIv = (ImageView) findViewById(R.id.preferences_return_iv);
         accountLayout = (LinearLayout) findViewById(R.id.preferences_account_layout);

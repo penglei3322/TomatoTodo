@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="colorHistory">#EDEDED</color>
     <color name="colorHistoryView">#DA1D32</color>
     <color name="colorHistoryViewTopBottom">#DEDEDE</color>
@@ -12,5 +13,12 @@
     <color name="colorHistoryTimeLayoutLastTextColor">#CBCBCB</color>
     <color name="colorHistoryTimeLayoutNameTextColor">#666666</color>
     <color name="colorHistoryTimeLayout">#FFFFFF</color>
+
+    <color name="txt_white">#FFFFFF</color>
+    <color name="txt_black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="listview_split">#dadada</color>
+    <color name="listview_bg_sel">#d9d9d9</color>
 
 </resources>

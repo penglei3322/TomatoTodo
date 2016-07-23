@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/txt_black"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView1"
+        style="@style/WarningText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_warning_1" />
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/WarningText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_warning_2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        style="@style/WarningText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_warning_3" />
+
+    <TextView
+        android:id="@+id/textView4"
+        style="@style/WarningText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_warning_4" />
+
+    <TextView
+        android:id="@+id/textView6"
+        style="@style/WarningText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_warning_6" />
+
+    <TextView
+        android:id="@+id/textView5"
+        style="@style/WarningText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_warning_5" />
+
+</LinearLayout>

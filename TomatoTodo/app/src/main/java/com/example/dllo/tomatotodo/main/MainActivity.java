@@ -205,12 +205,6 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 showPopupWindow();
 
                 break;
-
-            case R.id.pop_preferences:
-
-                startActivity(new Intent(this, PreferencesActivity.class));
-
-                break;
         }
     }
 
@@ -248,7 +242,11 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             goalPopTv.setVisibility(View.VISIBLE);
             sharePopTv.setVisibility(View.VISIBLE);
         }
-
-        preferencesPopTv.setOnClickListener(this);
+        preferencesPopTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
+            }
+        });
     }
 }
