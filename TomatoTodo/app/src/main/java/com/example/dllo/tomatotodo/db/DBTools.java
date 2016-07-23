@@ -39,14 +39,8 @@ public class DBTools{
     }
 
 
-    // 添加数据方法
-    public void addData(Object T) {
-        liteOrm.insert(T);
-    }
-
-
     //插入单条数据
-    public <T> void insertSingle(Class<T> T) {
+    public <T> void insertSingle(Object T) {
         liteOrm.insert(T);
     }
 
@@ -57,26 +51,28 @@ public class DBTools{
 
 
     //清除指定数据库
-    public <T> void deleteAll(Class<T> bean) {
-        liteOrm.deleteAll(bean);
+    public <T> void deleteAll(Class<T> tClass) {
+        liteOrm.deleteAll(tClass);
     }
 
     //条件删除
-    public <T> void deleteCondition(Class<T> T, String columnName, String condition) {
-        liteOrm.delete(new WhereBuilder(T).where(columnName + "LIKE ? ", new String[]{condition}));
+    public <T> void deleteCondition(Class<T> tClass, String columnName, String condition) {
+        liteOrm.delete(new WhereBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
     }
 
     //查询指定表所有数据
-    public <T> void queryAll(Class<T> T) {
-        liteOrm.query(T);
+    public <T> List<T> queryAll(Class<T> T) {
+        List list = liteOrm.query(T);
+        return list;
     }
 
     //条件查询
-    public <T> List<T> queryCondition(Class<T> T, String columnName, String condition) {
+    public <T> List<T> queryCondition(Class<T> tClass, String columnName, String condition) {
         List<T> list = new ArrayList();
-        list = liteOrm.query(new QueryBuilder<T>(T).where(columnName + " LIKE ? ", new String[]{condition}));
+        list = liteOrm.query(new QueryBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
         return list;
     }
+
 
 
 
