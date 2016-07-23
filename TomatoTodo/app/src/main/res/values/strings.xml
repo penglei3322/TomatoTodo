@@ -6,4 +6,25 @@
     <string name="firstTime">FirstTime</string>
     <string name="lastTime">LastTime</string>
     <string name="name">name</string>
+
+    <string name="start_block">开始屏蔽应用</string>
+    <string name="stop_block">停止屏蔽应用</string>
+    <string name="set_block_list">设置屏蔽列表</string>
+
+    <string name="common_warning_0">PLEASE</string>
+    <string name="common_warning_1">KEEP</string>
+    <string name="common_warning_2">CALM</string>
+    <string name="common_warning_3">AND"</string>
+    <string name="common_warning_4">GO BACK TO</string>
+    <string name="common_warning_5">WORK</string>
+    <string name="common_warning_6">FUCKING</string>
+
+    <string name="dialog_message">由于Android 5.0+ 系统的限制，必须设置当前应用 “有权查看使用情况的应用” 后，才能获取到栈顶Activity</string>
+    <string name="dialog_ok">去设置</string>
+    <string name="dialog_no">算了</string>
+    <string name="dialog_title">提醒</string>
+
+    <string name="permission_ok">好啦，现在AppBlock开始工作了~</string>
+    <string name="permission_error">没有赋予我权限啊，我没办法正常工作啊</string>
+
 </resources>

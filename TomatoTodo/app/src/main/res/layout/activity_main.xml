@@ -43,12 +43,13 @@
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:id="@+id/title_action_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@mipmap/logo" />
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/pop_spinner" />
 
     </RelativeLayout>
 
@@ -62,6 +63,6 @@
         android:id="@+id/main_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/main_tablayout"/>
+        android:layout_below="@id/main_tablayout"/>
 
 </RelativeLayout>

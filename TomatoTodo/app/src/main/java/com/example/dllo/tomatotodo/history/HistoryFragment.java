@@ -1,13 +1,9 @@
 package com.example.dllo.tomatotodo.history;
 
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
+
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
