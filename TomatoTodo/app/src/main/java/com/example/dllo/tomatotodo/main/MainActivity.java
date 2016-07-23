@@ -1,22 +1,25 @@
 package com.example.dllo.tomatotodo.main;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
@@ -24,6 +27,7 @@ import com.example.dllo.tomatotodo.base.BaseActivity;
 import com.example.dllo.tomatotodo.countdowndetail.CountdownDetailActivity;
 import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
+import com.example.dllo.tomatotodo.preferences.PreferencesActivity;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
 import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
@@ -47,7 +51,9 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     private TomatoService.MyBinder myBinder;
     private NotificationManager notificationManager;
     private boolean isShowing = false;
-
+    private ImageView popIv;
+    private PopupWindow popupWindow;
+    private int pos = 0;
 
     @Override
     public int initView() {
@@ -62,6 +68,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         viewPager = (ViewPager) findViewById(R.id.main_viewpager);
         titleTimer = (TextView) findViewById(R.id.title_timer);
         startCb = (CheckBox) findViewById(R.id.title_action_checkbox);
+        popIv = (ImageView) findViewById(R.id.title_action_pop);
         fragments = new ArrayList<>();
         fragments.add(new PotatoListFragment());
         fragments.add(new HistoryFragment());
@@ -71,6 +78,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         tabLayout.setupWithViewPager(viewPager);
 
         titleTimer.setOnClickListener(this);
+        popIv.setOnClickListener(this);
 
         // 绑定服务
         Intent serviceIntent = new Intent(this, TomatoService.class);
@@ -79,7 +87,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 myBinder = (TomatoService.MyBinder) service;
-                if (myBinder.isTick()){
+                if (myBinder.isTick()) {
                     startCb.setChecked(true);
                 }
             }
@@ -93,12 +101,28 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         startCb.setOnCheckedChangeListener(this);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-        int workTime = sharedPreferences.getInt("workTime",25);
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+        int workTime = sharedPreferences.getInt("workTime", 25);
         titleTimer.setText(workTime + ":00");
 
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pos = position;
+                Log.d("pos", pos + "```");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Subscribe
@@ -137,7 +161,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 myBinder.startCountDown();
             }
         } else {
-            if (isShowing == false){
+            if (isShowing == false) {
                 showDelAlert();
                 startCb.setChecked(true);
             }
@@ -154,8 +178,8 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 myBinder.cancelCountDown();
-                SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-                int workTime = sharedPreferences.getInt("workTime",25);
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
                 titleTimer.setText(workTime + ":00");
                 isShowing = true;
                 startCb.setChecked(false);
@@ -169,11 +193,62 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.title_timer:
                 Intent intent = new Intent(MainActivity.this, CountdownDetailActivity.class);
                 startActivity(intent);
                 break;
+
+            case R.id.title_action_pop:
+
+                // PopupWindow
+                showPopupWindow();
+
+                break;
+
+            case R.id.pop_preferences:
+
+                startActivity(new Intent(this, PreferencesActivity.class));
+
+                break;
         }
+    }
+
+    private void showPopupWindow() {
+
+        TextView finishPopTv,recordPopTv, interruptPopTv, goalPopTv, sharePopTv, preferencesPopTv, helpPopTv;
+
+
+        View view = LayoutInflater.from(this).inflate(R.layout.popup_window, null);
+
+
+        popupWindow = new PopupWindow(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        finishPopTv = (TextView) view.findViewById(R.id.pop_finish);
+        recordPopTv = (TextView) view.findViewById(R.id.pop_record);
+        interruptPopTv = (TextView) view.findViewById(R.id.pop_interrupt);
+        goalPopTv = (TextView) view.findViewById(R.id.pop_goal);
+        sharePopTv = (TextView) view.findViewById(R.id.pop_share);
+        preferencesPopTv = (TextView) view.findViewById(R.id.pop_preferences);
+        helpPopTv = (TextView) view.findViewById(R.id.pop_help);
+        popupWindow.setContentView(view);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.showAsDropDown(tabLayout, tabLayout.getWidth(), -tabLayout.getHeight());
+
+        if (pos == 1) {
+            finishPopTv.setVisibility(View.GONE);
+            recordPopTv.setVisibility(View.VISIBLE);
+            interruptPopTv.setVisibility(View.VISIBLE);
+        }
+        if (pos == 2){
+            finishPopTv.setVisibility(View.GONE);
+            recordPopTv.setVisibility(View.GONE);
+            interruptPopTv.setVisibility(View.GONE);
+            goalPopTv.setVisibility(View.VISIBLE);
+            sharePopTv.setVisibility(View.VISIBLE);
+        }
+
+        preferencesPopTv.setOnClickListener(this);
     }
 }

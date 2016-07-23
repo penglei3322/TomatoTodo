@@ -34,6 +34,11 @@ public class HistoryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private int getCountByGroup(int groupPos){
+
+        return 0;
+    }
+
     private boolean ifHasData() {
         return historyBeen.size() > 0 && historyBeen != null;
     }
