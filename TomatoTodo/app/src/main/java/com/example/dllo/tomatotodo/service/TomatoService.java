@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.dllo.tomatotodo.R;
+import com.litesuits.orm.LiteOrm;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,7 +31,12 @@ public class TomatoService extends Service {
     private MyBinder myBinder = new MyBinder();
     private CountDownTimer countDownTimer;
     private NotificationManager notificationManager;
+
+    private long startWorkTime;
+
     private boolean isTick;
+    private boolean isFinish;
+    private boolean isRest;
 
 
     @Override
@@ -48,13 +54,27 @@ public class TomatoService extends Service {
     public class MyBinder extends Binder {
 
         public void startCountDown() {
+            startWorkTime = System.currentTimeMillis();
             setTick(true);
-            countDown();
+            SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+            int duration = sharedPreferences.getInt("workTime", 25);
+            countDown(duration);
+        }
+
+        public void startRestCountDown(){
+            isRest = true;
+            setTick(true);
+            SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+            int duration = sharedPreferences.getInt("restTime", 5);
+            countDown(duration);
         }
 
         public void cancelCountDown() {
             setTick(false);
             countDownTimer.cancel();
+            if (isRest){
+                isRest = false;
+            }
             stopForeground(true);
         }
 
@@ -66,28 +86,46 @@ public class TomatoService extends Service {
             isTick = mTick;
         }
 
+        public boolean isFinish(){
+            return isFinish;
+        }
+
+        public boolean isRest(){
+            return isRest;
+        }
+
+        public long getStartWorkTime(){
+            return startWorkTime;
+        }
+
     }
 
-    // 倒计时
-    public void countDown() {
-        SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
-        int duration = sharedPreferences.getInt("workTime", 25);
-        countDownTimer = new CountDownTimer(duration * 60 * 1000, 1000) {
+    // 工作倒计时
+    public void countDown(int duration) {
+        countDownTimer = new CountDownTimer(1 * 5 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 EventBus.getDefault().post(new CountDownEvent(millisUntilFinished));
                 showNotification(millisUntilFinished);
+                isFinish = false;
             }
 
             @Override
             public void onFinish() {
-                EventBus.getDefault().post(new CountDownEvent(-1));
                 myBinder.setTick(false);
+                isFinish = true;
                 showNotification(-1);
+                if (isRest){
+                    isRest = false;
+                    EventBus.getDefault().post(new CountDownEvent(0)); // 休息结束
+                } else {
+                    EventBus.getDefault().post(new CountDownEvent(-1));// 工作结束
+                }
             }
         }.start();
 
     }
+
 
 
     // 显示通知栏
@@ -106,9 +144,9 @@ public class TomatoService extends Service {
             remoteViews.setTextViewText(R.id.notification_msg_tv, "点击以提交番茄");
         }
 
-//        Intent intent = new Intent();
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this,1,intent,PendingIntent.FLAG_CANCEL_CURRENT);
-//        remoteViews.setOnClickPendingIntent(R.id.notification_layout,pendingIntent);
+        Intent intent = new Intent(this, CompleteTimerActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,1,intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.notification_layout,pendingIntent);
 
         builder.setContent(remoteViews);
 //        builder.setOngoing(true);

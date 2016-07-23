@@ -39,14 +39,8 @@ public class DBTools{
     }
 
 
-    // 添加数据方法
-    public void addData(Object T) {
-        liteOrm.insert(T);
-    }
-
-
     //插入单条数据
-    public <T> void insertSingle(Class<T> T) {
+    public <T> void insertSingle(Object T) {
         liteOrm.insert(T);
     }
 
@@ -67,8 +61,8 @@ public class DBTools{
     }
 
     //查询指定表所有数据
-    public <T> void queryAll(Class<T> T) {
-        liteOrm.query(T);
+    public <T> ArrayList<T> queryAll(Class<T> T) {
+        return liteOrm.query(T);
     }
 
     //条件查询
