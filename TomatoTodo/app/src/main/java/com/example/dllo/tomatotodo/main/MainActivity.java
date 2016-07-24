@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -90,8 +91,8 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 if (myBinder.isTick()) {
                     startCb.setChecked(true);
                 } else {
-                    if (myBinder.isFinish()){
-                        setTitleTimer(new CountDownEvent(0));
+                    if (myBinder.isWorkFinish()) {
+                        setTitleTimer(new CountDownEvent(-1));
                     }
                 }
             }
@@ -117,7 +118,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         if (countDownEvent.getMillisUntilFinished() > 0) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
             String time = simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished()));
-            if (myBinder.isRest()){
+            if (myBinder.isRest()) {
                 titleTimer.setTextColor(Color.GREEN);
                 acceptBtn.setVisibility(View.GONE);
                 startCb.setVisibility(View.VISIBLE);
@@ -126,12 +127,12 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             }
             titleTimer.setText(time);
             startCb.setChecked(true);
-        } else if (countDownEvent.getMillisUntilFinished() == -1){ // 工作结束
+        } else if (countDownEvent.getMillisUntilFinished() == -1) { // 工作结束
             titleTimer.setText("番茄已完成");
             acceptBtn.setVisibility(View.VISIBLE);
             startCb.setVisibility(View.GONE);
         }
-        if (countDownEvent.getMillisUntilFinished() == 0){ // 休息结束
+        if (countDownEvent.getMillisUntilFinished() == 0) { // 休息结束
             SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
             int workTime = sharedPreferences.getInt("workTime", 25);
             titleTimer.setText(workTime + ":00");
@@ -146,9 +147,21 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     @Override
     protected void onResume() {
         super.onResume();
+
         if (isActive) {
             if (myBinder.isTick()) {
                 startCb.setChecked(true);
+            } else {
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
+                titleTimer.setText(workTime + ":00");
+                titleTimer.setTextColor(Color.BLACK);
+                isShowing = true;
+                startCb.setChecked(false);
+                isShowing = false;
+            }
+            if (myBinder.isWorkFinish()){
+                setTitleTimer(new CountDownEvent(-1));
             }
         }
         isActive = true;

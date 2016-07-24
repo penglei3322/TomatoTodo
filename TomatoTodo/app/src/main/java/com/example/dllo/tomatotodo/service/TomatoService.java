@@ -35,7 +35,7 @@ public class TomatoService extends Service {
     private long startWorkTime;
 
     private boolean isTick;
-    private boolean isFinish;
+    private boolean isWorkFinish;
     private boolean isRest;
 
 
@@ -86,9 +86,11 @@ public class TomatoService extends Service {
             isTick = mTick;
         }
 
-        public boolean isFinish(){
-            return isFinish;
+        public boolean isWorkFinish(){
+            return isWorkFinish;
         }
+
+
 
         public boolean isRest(){
             return isRest;
@@ -100,26 +102,27 @@ public class TomatoService extends Service {
 
     }
 
-    // 工作倒计时
+    // 倒计时
     public void countDown(int duration) {
-        countDownTimer = new CountDownTimer(1 * 5 * 1000, 1000) {
+        countDownTimer = new CountDownTimer(1 * 10 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 EventBus.getDefault().post(new CountDownEvent(millisUntilFinished));
                 showNotification(millisUntilFinished);
-                isFinish = false;
+                isWorkFinish = false;
             }
 
             @Override
             public void onFinish() {
                 myBinder.setTick(false);
-                isFinish = true;
-                showNotification(-1);
                 if (isRest){
                     isRest = false;
                     EventBus.getDefault().post(new CountDownEvent(0)); // 休息结束
+                    showNotification(0);
                 } else {
+                    isWorkFinish = true;
                     EventBus.getDefault().post(new CountDownEvent(-1));// 工作结束
+                    showNotification(-1);
                 }
             }
         }.start();
@@ -139,9 +142,16 @@ public class TomatoService extends Service {
         if (countDownTime > 0) {
             remoteViews.setTextViewText(R.id.notification_countdown_tv, time);
             remoteViews.setTextViewText(R.id.notification_msg_tv, "番茄进行中");
-        } else {
+        } else if (countDownTime == -1){
             remoteViews.setTextViewText(R.id.notification_countdown_tv, "番茄时间结束");
             remoteViews.setTextViewText(R.id.notification_msg_tv, "点击以提交番茄");
+        } else {
+            remoteViews.setTextViewText(R.id.notification_countdown_tv, "休息结束");
+            remoteViews.setTextViewText(R.id.notification_msg_tv, "点击返回");
+        }
+
+        if (isRest){
+            remoteViews.setTextViewText(R.id.notification_msg_tv, "休息中");
         }
 
         Intent intent = new Intent(this, CompleteTimerActivity.class);

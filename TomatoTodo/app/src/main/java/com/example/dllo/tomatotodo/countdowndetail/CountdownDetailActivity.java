@@ -41,6 +41,7 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
     private boolean isShowing;
     private ImageView acceptBtn;
     private TextView timeMsg;
+    private boolean isActive;
 
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
@@ -72,13 +73,15 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
                 if (myBinder.isTick()){
                     startCb.setChecked(true);
                 } else {
-                    if (myBinder.isFinish()) {
+                    if (myBinder.isWorkFinish()) {
                         timeTv.setText("番茄已完成");
                         timeMsg.setText("点击以提交");
                         startCb.setVisibility(View.GONE);
                         acceptBtn.setVisibility(View.VISIBLE);
                         progressView.setProgress(360);
+                        progressView.setColor(Color.RED);
                     }
+
                 }
             }
 
@@ -91,6 +94,17 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isActive) {
+            if (myBinder.isTick()) {
+                startCb.setChecked(true);
+            }
+        }
+        isActive = true;
     }
 
     @Override
@@ -110,13 +124,16 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
         if (countDownEvent.getMillisUntilFinished() > 0) {
             progressView.setProgress(progress);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-//            if (myBinder.isRest()){
-//                timeTv.setTextColor(Color.GREEN);
-//                acceptBtn.setVisibility(View.GONE);
-//                startCb.setVisibility(View.VISIBLE);
-//            } else {
-//                timeTv.setTextColor(Color.BLACK);
-//            }
+            if (myBinder.isRest()){
+                timeTv.setTextColor(Color.GREEN);
+                acceptBtn.setVisibility(View.GONE);
+                startCb.setVisibility(View.VISIBLE);
+                timeMsg.setText("");
+                progressView.setColor(Color.GREEN);
+            } else {
+                timeTv.setTextColor(Color.BLACK);
+                progressView.setColor(Color.RED);
+            }
             timeTv.setText(simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished())));
         } else if (countDownEvent.getMillisUntilFinished() == -1){ // 工作结束
             timeTv.setText("番茄已完成");
@@ -124,15 +141,16 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
             startCb.setVisibility(View.GONE);
             acceptBtn.setVisibility(View.VISIBLE);
         }
-//        if (countDownEvent.getMillisUntilFinished() == 0){ // 休息结束
-//            SharedPreferences preferences = getSharedPreferences("titleTime", MODE_PRIVATE);
-//            int workTime = preferences.getInt("workTime", 25);
-//            timeTv.setText(workTime + ":00");
-//            timeTv.setTextColor(Color.BLACK);
-//            isShowing = true;
-//            startCb.setChecked(false);
-//            isShowing = false;
-//        }
+        if (countDownEvent.getMillisUntilFinished() == 0){ // 休息结束
+            SharedPreferences preferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+            int workTime = preferences.getInt("workTime", 25);
+            timeTv.setText(workTime + ":00");
+            timeTv.setTextColor(Color.BLACK);
+            isShowing = true;
+            startCb.setChecked(false);
+            isShowing = false;
+            progressView.setProgress(0);
+        }
     }
 
     public void initProgress(){
@@ -151,15 +169,16 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
                 showDelAlert();
                 startCb.setChecked(true);
             } else {
-                // 取消休息
-//                myBinder.cancelCountDown();
-//                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
-//                int workTime = sharedPreferences.getInt("workTime", 25);
-//                timeTv.setText(workTime + ":00");
-//                timeTv.setTextColor(Color.BLACK);
-//                isShowing = true;
-//                startCb.setChecked(false);
-//                isShowing = false;
+                //取消休息
+                myBinder.cancelCountDown();
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
+                timeTv.setText(workTime + ":00");
+                timeTv.setTextColor(Color.BLACK);
+                isShowing = true;
+                startCb.setChecked(false);
+                isShowing = false;
+                progressView.setProgress(0);
             }
         }
     }
