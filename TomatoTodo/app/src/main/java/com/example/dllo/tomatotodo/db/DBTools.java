@@ -8,13 +8,14 @@ import com.litesuits.orm.db.assit.QueryBuilder;
 import java.util.ArrayList;
 
 import com.litesuits.orm.db.assit.WhereBuilder;
+
 import java.util.List;
 
 
 /**
  * Created by dllo on 16/7/21.
  */
-public class DBTools{
+public class DBTools {
 
     private static DBTools dbTools;
     private LiteOrm liteOrm;
@@ -61,19 +62,19 @@ public class DBTools{
     }
 
     //查询指定表所有数据
+
     public <T> List<T> queryAll(Class<T> T) {
         List list = liteOrm.query(T);
         return list;
     }
 
     //条件查询
+
     public <T> List<T> queryCondition(Class<T> tClass, String columnName, String condition) {
         List<T> list = new ArrayList();
         list = liteOrm.query(new QueryBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
         return list;
     }
-
-
 
 
 }

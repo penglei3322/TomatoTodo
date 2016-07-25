@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -13,9 +14,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
+import com.example.dllo.tomatotodo.service.CompleteTimerActivity;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
 
@@ -38,6 +41,7 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
     private boolean isShowing;
     private ImageView acceptBtn;
     private TextView timeMsg;
+    private boolean isActive;
 
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
@@ -66,8 +70,18 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 myBinder = (TomatoService.MyBinder) service;
-                if (myBinder.isTick()){
+                if (myBinder.isTick()) {
                     startCb.setChecked(true);
+                } else {
+                    if (myBinder.isWorkFinish()) {
+                        timeTv.setText("番茄已完成");
+                        timeMsg.setText("点击以提交");
+                        startCb.setVisibility(View.GONE);
+                        acceptBtn.setVisibility(View.VISIBLE);
+                        progressView.setProgress(360);
+                        progressView.setColor(Color.RED);
+                    }
+
                 }
             }
 
@@ -79,7 +93,17 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
         bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
 
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isActive) {
+            if (myBinder.isTick()) {
+                startCb.setChecked(true);
+            }
+        }
+        isActive = true;
     }
 
     @Override
@@ -91,24 +115,46 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
 
 
     @Subscribe
-    public void setProgress(CountDownEvent countDownEvent){
-        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-        int time = sharedPreferences.getInt("workTime", 25);
-        float seconds = time * 60 - countDownEvent.getMillisUntilFinished() / 1000;
-        float progress = 360 * seconds / (time * 60);
+    public void setProgress(CountDownEvent countDownEvent) {
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+        int time = 0;
         if (countDownEvent.getMillisUntilFinished() > 0) {
-            progressView.setProgress(progress);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+            if (myBinder.isRest()) {
+                time = sharedPreferences.getInt("restTime", 5);
+                timeTv.setTextColor(Color.GREEN);
+                acceptBtn.setVisibility(View.GONE);
+                startCb.setVisibility(View.VISIBLE);
+                timeMsg.setText("");
+                progressView.setColor(Color.GREEN);
+            } else {
+                time = sharedPreferences.getInt("workTime", 25);
+                timeTv.setTextColor(Color.BLACK);
+                progressView.setColor(Color.RED);
+            }
+            float seconds = time * 60 - countDownEvent.getMillisUntilFinished() / 1000;
+            float progress = 360 * seconds / (time * 60);
+            progressView.setProgress(progress);
             timeTv.setText(simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished())));
-        } else {
+        } else if (countDownEvent.getMillisUntilFinished() == -1) { // 工作结束
             timeTv.setText("番茄已完成");
             timeMsg.setText("点击以提交");
             startCb.setVisibility(View.GONE);
             acceptBtn.setVisibility(View.VISIBLE);
         }
+        if (countDownEvent.getMillisUntilFinished() == 0) { // 休息结束
+            SharedPreferences preferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+            int workTime = preferences.getInt("workTime", 25);
+            timeTv.setText(workTime + ":00");
+            timeTv.setTextColor(Color.BLACK);
+            isShowing = true;
+            startCb.setChecked(false);
+            isShowing = false;
+            progressView.setProgress(0);
+        }
     }
 
-    public void initProgress(){
+    public void initProgress() {
 
     }
 
@@ -120,9 +166,20 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
                 myBinder.startCountDown();
             }
         } else {
-            if (isShowing == false){
+            if (!isShowing && !myBinder.isRest()) {
                 showDelAlert();
                 startCb.setChecked(true);
+            } else {
+                //取消休息
+                myBinder.cancelCountDown();
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
+                timeTv.setText(workTime + ":00");
+                timeTv.setTextColor(Color.BLACK);
+                isShowing = true;
+                startCb.setChecked(false);
+                isShowing = false;
+                progressView.setProgress(0);
             }
         }
     }
@@ -136,8 +193,8 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 myBinder.cancelCountDown();
-                SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-                int workTime = sharedPreferences.getInt("workTime",25);
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
                 timeTv.setText(workTime + ":00");
                 isShowing = true;
                 startCb.setChecked(false);
@@ -153,6 +210,7 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
     // accept监听
     @Override
     public void onClick(View v) {
-
+        Intent intentComplete = new Intent(CountdownDetailActivity.this, CompleteTimerActivity.class);
+        startActivity(intentComplete);
     }
 }

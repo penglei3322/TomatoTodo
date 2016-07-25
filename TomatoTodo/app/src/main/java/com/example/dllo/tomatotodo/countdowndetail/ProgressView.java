@@ -18,11 +18,12 @@ public class ProgressView extends View  {
 
     private Paint paintGray;
     private Paint paintWhite;
-    private Paint paintRed;
+    private Paint paintProgress;
     private int length;
-    private Canvas canvas;
 
     private float progress;
+    private int color;
+
 
     public ProgressView(Context context) {
         super(context);
@@ -36,6 +37,9 @@ public class ProgressView extends View  {
         super(context, attrs, defStyleAttr);
     }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
 
     public void setProgress(float progress) {
         this.progress = progress;
@@ -56,14 +60,14 @@ public class ProgressView extends View  {
         paintGray.setColor(Color.LTGRAY);
         paintWhite = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintWhite.setColor(Color.WHITE);
-        paintRed = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintRed.setColor(Color.RED);
+        paintProgress = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintProgress.setColor(color);
 
         canvas.drawCircle(length / 2, length / 2, length / 2, paintGray);
 
         if (progress != 0) {
             RectF rectF = new RectF(0, 0, length, length);
-            canvas.drawArc(rectF, -90, progress, true, paintRed);
+            canvas.drawArc(rectF, -90, progress, true, paintProgress);
         }
 
         canvas.drawCircle(length / 2, length / 2, length / 2 - 20, paintWhite);

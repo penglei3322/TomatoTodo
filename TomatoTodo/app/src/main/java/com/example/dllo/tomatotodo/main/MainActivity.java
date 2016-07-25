@@ -6,13 +6,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+
 import android.graphics.drawable.BitmapDrawable;
+
+import android.graphics.Color;
+
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
 import android.view.LayoutInflater;
 
 import android.view.View;
@@ -26,13 +31,19 @@ import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
 import com.example.dllo.tomatotodo.countdowndetail.CountdownDetailActivity;
+import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
+
 import com.example.dllo.tomatotodo.preferences.PreferencesActivity;
+
+import com.example.dllo.tomatotodo.service.CompleteTimerActivity;
+
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
 import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
@@ -94,7 +105,11 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         tabLayout.setupWithViewPager(viewPager);
 
         titleTimer.setOnClickListener(this);
+
         popIv.setOnClickListener(this);
+
+        acceptBtn.setOnClickListener(this);
+
 
         // 绑定服务
         Intent serviceIntent = new Intent(this, TomatoService.class);
@@ -105,6 +120,10 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 myBinder = (TomatoService.MyBinder) service;
                 if (myBinder.isTick()) {
                     startCb.setChecked(true);
+                } else {
+                    if (myBinder.isWorkFinish()) {
+                        setTitleTimer(new CountDownEvent(-1));
+                    }
                 }
             }
 
@@ -148,12 +167,28 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         if (countDownEvent.getMillisUntilFinished() > 0) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
             String time = simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished()));
+            if (myBinder.isRest()) {
+                titleTimer.setTextColor(Color.GREEN);
+                acceptBtn.setVisibility(View.GONE);
+                startCb.setVisibility(View.VISIBLE);
+            } else {
+                titleTimer.setTextColor(Color.BLACK);
+            }
             titleTimer.setText(time);
             startCb.setChecked(true);
-        } else {
+        } else if (countDownEvent.getMillisUntilFinished() == -1) { // 工作结束
             titleTimer.setText("番茄已完成");
             acceptBtn.setVisibility(View.VISIBLE);
             startCb.setVisibility(View.GONE);
+        }
+        if (countDownEvent.getMillisUntilFinished() == 0) { // 休息结束
+            SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+            int workTime = sharedPreferences.getInt("workTime", 25);
+            titleTimer.setText(workTime + ":00");
+            titleTimer.setTextColor(Color.BLACK);
+            isShowing = true;
+            startCb.setChecked(false);
+            isShowing = false;
         }
     }
 
@@ -161,9 +196,21 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     @Override
     protected void onResume() {
         super.onResume();
+
         if (isActive) {
             if (myBinder.isTick()) {
                 startCb.setChecked(true);
+            } else {
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
+                titleTimer.setText(workTime + ":00");
+                titleTimer.setTextColor(Color.BLACK);
+                isShowing = true;
+                startCb.setChecked(false);
+                isShowing = false;
+            }
+            if (myBinder.isWorkFinish()){
+                setTitleTimer(new CountDownEvent(-1));
             }
         }
         isActive = true;
@@ -184,12 +231,23 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         if (isChecked) {
             if (!myBinder.isTick()) {
                 myBinder.startCountDown();
+                titleTimer.setTextColor(Color.BLACK);
             }
         } else {
-            if (isShowing == false) {
+            if (!isShowing && !myBinder.isRest()) {
                 showDelAlert();
                 startCb.setChecked(true);
+            } else { // 取消休息
+                myBinder.cancelCountDown();
+                SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+                int workTime = sharedPreferences.getInt("workTime", 25);
+                titleTimer.setText(workTime + ":00");
+                titleTimer.setTextColor(Color.BLACK);
+                isShowing = true;
+                startCb.setChecked(false);
+                isShowing = false;
             }
+
         }
     }
 
@@ -206,6 +264,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
                 int workTime = sharedPreferences.getInt("workTime", 25);
                 titleTimer.setText(workTime + ":00");
+                titleTimer.setTextColor(Color.BLACK);
                 isShowing = true;
                 startCb.setChecked(false);
                 isShowing = false;
@@ -225,7 +284,8 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 break;
 
             case R.id.title_action_accept:
-
+                Intent intentComplete = new Intent(MainActivity.this, CompleteTimerActivity.class);
+                startActivity(intentComplete);
                 break;
 
 
