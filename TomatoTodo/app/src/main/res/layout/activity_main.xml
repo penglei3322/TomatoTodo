@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#E3E3E3">
 
         <ImageView
             android:layout_width="30dp"
@@ -32,6 +33,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/action_checkbox"
             android:button="@null" />
+
         <ImageView
             android:id="@+id/title_action_accept"
             android:layout_alignParentRight="true"
@@ -48,16 +50,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:src="@mipmap/pop_spinner" />
+            android:src="@mipmap/pop" />
 
     </RelativeLayout>
+
+    <View
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_history_view_height"
+        android:layout_below="@+id/rl_title"
+        android:background="#CCCCCC" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/main_tablayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_title"/>
+        android:layout_below="@id/main_view"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/main_viewpager"
