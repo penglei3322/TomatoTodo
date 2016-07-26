@@ -3,6 +3,7 @@ package com.example.dllo.tomatotodo.preferences.shieldingapplications;
 import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,27 +65,32 @@ public class ShieldingNoneAlreadyListAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
         final PackageInfo packageInfo = mPackageInfoList.get(position);
+
         mViewHolder.textView.setText(packageInfo.applicationInfo.loadLabel(mActivity.getPackageManager()).toString());
-//        mViewHolder.imageView.setImageResource(packageInfo.applicationInfo.icon);
         Drawable drawable = packageInfo.applicationInfo.loadIcon(mActivity.getPackageManager());
         mViewHolder.imageView.setBackgroundDrawable(drawable);
+
         if (contains(mCheckedList, packageInfo)) {
             mViewHolder.checkBox.setChecked(true);
         }else {
             mViewHolder.checkBox.setChecked(false);
         }
-        convertView.setOnClickListener(new View.OnClickListener() {
+        mViewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (contains(mCheckedList, packageInfo)) {
                     remove(mCheckedList, packageInfo);
+                    Log.d("Clark", "mCheckedList remove:" + mCheckedList.size());
                 } else {
+
                     mCheckedList.add(packageInfo.packageName);
+                    Log.d("Clark", "mCheckedList: add" + mCheckedList.size());
                 }
                 BlockUtils.save(mActivity, mCheckedList);
                 notifyDataSetChanged();
             }
         });
+
         return convertView;
     }
 

@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.example.dllo.tomatotodo.R;
+import com.example.dllo.tomatotodo.main.MainActivity;
 
 public class WarningActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,4 +29,14 @@ public class WarningActivity extends AppCompatActivity {
         finish();
         return;
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+
 }

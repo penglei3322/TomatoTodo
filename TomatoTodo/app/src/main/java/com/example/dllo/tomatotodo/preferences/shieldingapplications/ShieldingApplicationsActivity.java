@@ -2,9 +2,10 @@ package com.example.dllo.tomatotodo.preferences.shieldingapplications;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
@@ -29,6 +31,7 @@ public class ShieldingApplicationsActivity extends BaseActivity implements View.
     private ShieldingNoneAlreadyListAdapter mAdapter;
     private LinearLayout alreadyListLayout;
     private static final int REQUEST_SETTING = 1;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public int initView() {
@@ -51,6 +54,8 @@ public class ShieldingApplicationsActivity extends BaseActivity implements View.
             alreadyListLayout.setVisibility(View.VISIBLE);
             alreadyList.setVisibility(View.VISIBLE);
         }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ShieldingApplicationsActivity.this);
+        shieldingSwitch.setChecked(sharedPreferences.getBoolean("isChecked", false));
 
         // 找出系统应用设置数据
         setPackInfo();
@@ -64,22 +69,31 @@ public class ShieldingApplicationsActivity extends BaseActivity implements View.
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (BlockUtils.isBlockServiceRunning(ShieldingApplicationsActivity.this, CoreService.class)) {
+                if (isChecked) {
+                    if (!BlockUtils.isBlockServiceRunning(ShieldingApplicationsActivity.this, CoreService.class)) {
 
-                    Intent intent = new Intent();
-                    intent.setClass(ShieldingApplicationsActivity.this, CoreService.class);
-                    stopService(intent);
-                } else {
-                    if (!TopActivityUtils.isStatAccessPermissionSet(ShieldingApplicationsActivity.this)) {
-                        showDialog();
-                    } else {
                         Intent intent = new Intent();
                         intent.setClass(ShieldingApplicationsActivity.this, CoreService.class);
                         startService(intent);
+                    } else {
+                        if (!TopActivityUtils.isStatAccessPermissionSet(ShieldingApplicationsActivity.this)) {
+                            showDialog();
+                        } else {
+
+                            Intent intent = new Intent();
+                            intent.setClass(ShieldingApplicationsActivity.this, CoreService.class);
+                            stopService(intent);
+                        }
                     }
                 }
+                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ShieldingApplicationsActivity.this);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isChecked", isChecked);
+                editor.apply();
+
             }
         });
+
     }
 
     private void showDialog() {
@@ -89,7 +103,6 @@ public class ShieldingApplicationsActivity extends BaseActivity implements View.
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        // some rom has removed the newly introduced android.settings.USAGE_ACCESS_SETTINGS
                         try {
                             startActivityForResult(new Intent("android.settings.USAGE_ACCESS_SETTINGS"), REQUEST_SETTING);
                         } catch (Exception e) {
@@ -104,17 +117,6 @@ public class ShieldingApplicationsActivity extends BaseActivity implements View.
                 }).show();
 
 
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-
-            case R.id.shielding_return_iv:
-                finish();
-                break;
-        }
     }
 
     private void setPackInfo() {
@@ -135,5 +137,34 @@ public class ShieldingApplicationsActivity extends BaseActivity implements View.
     private boolean isSystemPackage(PackageInfo packageInfo) {
         // 判断是否为非系统预装的应用程序
         return (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_SETTING) {
+            if (TopActivityUtils.isStatAccessPermissionSet(this)) {
+                // 成功开启了权限
+                Intent intent = new Intent();
+                intent.setClass(this, CoreService.class);
+                this.startService(intent);
+
+                Toast.makeText(this, R.string.permission_ok, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, R.string.permission_error, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            case R.id.shielding_return_iv:
+                finish();
+                break;
+        }
     }
 }
