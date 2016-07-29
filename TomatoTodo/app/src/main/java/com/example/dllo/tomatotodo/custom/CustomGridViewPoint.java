@@ -22,7 +22,6 @@ public class CustomGridViewPoint extends View {
     private Paint mPaintArc;
     private Paint mPaintOut;
     private Paint mPaintNum;
-    private String num = null;
 
     //屏幕宽度
     private int mWidth;
@@ -35,10 +34,7 @@ public class CustomGridViewPoint extends View {
         invalidate();
     }
 
-    public void setNum(String num) {
-        this.num = num;
-        invalidate();
-    }
+
 
     public CustomGridViewPoint(Context context, AttributeSet attrs) {
         super(context, attrs);
