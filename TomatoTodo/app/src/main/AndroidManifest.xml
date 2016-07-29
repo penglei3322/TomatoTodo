@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dllo.tomatotodo">
-
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
 
@@ -9,6 +8,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/about_logo"
         android:label="@string/app_name"
+        android:name=".MyApp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".main.MainActivity">
@@ -22,9 +22,11 @@
         <activity android:name=".service.CompleteTimerActivity"/>
         <activity android:name=".countdowndetail.CountdownDetailActivity"/>
         <service android:name=".service.TomatoService" />
+
         <activity android:name=".preferences.PreferencesActivity" />
         <activity android:name=".preferences.shieldingapplications.ShieldingApplicationsActivity" />
         <activity android:name=".preferences.shieldingapplications.WarningActivity"></activity>
+        <activity android:name=".statistics.object.ObjectiveActivity"/>
     </application>
 
 </manifest>

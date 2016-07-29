@@ -47,7 +47,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_object_last_mouth"
+                        android:id="@+id/tv_object_last_month_complete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="7" />
@@ -75,7 +75,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_object_average_last_mouth"
+                        android:id="@+id/tv_object_average_last_month_average"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.67" />
@@ -102,7 +102,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_complete_last_mouth"
+                        android:id="@+id/tv_complete_last_mouth_yield_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0%" />
@@ -117,10 +117,12 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <GridView
+                android:id="@+id/gridViewLastMonth"
+                android:numColumns="6"
+                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
-
+                android:layout_height="500dp"/>
             <ProgressBar
 
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -170,6 +172,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_object_twelve_week_complete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8" />
@@ -197,7 +200,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_object_average_last_twelve_week"
+                        android:id="@+id/tv_object_twelve_week_average"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.67" />
@@ -224,6 +227,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_object_twelve_week_yield_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0%" />
@@ -239,6 +243,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerTwelveWeek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
@@ -290,7 +295,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_object_last_twelve_week"
+                        android:id="@+id/tv_object_twelve_month_complete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="7" />
@@ -318,7 +323,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_object_average_last_twelve_mouth"
+                        android:id="@+id/tv_object_twelve_month_average"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.23" />
@@ -345,7 +350,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_complete_last_twelve_mouth"
+                        android:id="@+id/tv_last_twelve_month_yield_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.23" />
@@ -361,11 +366,11 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerTwelveMonth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
             <ProgressBar
-
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
