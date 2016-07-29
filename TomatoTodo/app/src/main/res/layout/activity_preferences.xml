@@ -39,7 +39,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:text="422392573@qq.com"
                     android:textSize="@dimen/item_history_time_text_size" />
 
                 <View
@@ -96,8 +95,7 @@
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:visibility="gone">
+                android:paddingTop="@dimen/activity_vertical_margin">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -112,8 +110,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:text="登录"
-                    android:textSize="@dimen/item_history_time_text_size" />
+                    android:text="登录/注册"
+                    android:textSize="@dimen/item_history_text_size" />
 
                 <View
                     android:layout_width="match_parent"

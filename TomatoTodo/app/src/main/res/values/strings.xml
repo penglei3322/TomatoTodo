@@ -27,4 +27,6 @@
     <string name="permission_ok">好啦，现在AppBlock开始工作了~</string>
     <string name="permission_error">没有赋予我权限啊，我没办法正常工作啊</string>
 
+    <string name="login_terms_of_service">点击注册, 即表明您同意我们的服务条款和隐私条款</string>
+
 </resources>
