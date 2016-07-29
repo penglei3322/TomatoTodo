@@ -22,11 +22,10 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_potatolist_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_potatolist_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

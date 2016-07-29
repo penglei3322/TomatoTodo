@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
 
+import com.example.dllo.tomatotodo.potatolist.activity.PotatoListDetailActivity;
 import com.example.dllo.tomatotodo.preferences.PreferencesActivity;
 
 import com.example.dllo.tomatotodo.service.CompleteTimerActivity;
@@ -66,8 +69,11 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     private ImageView acceptBtn;
     private ServiceConnection serviceConnection;
     private TomatoService.MyBinder myBinder;
+    private RelativeLayout relativeLayout;
     private NotificationManager notificationManager;
     private boolean isShowing = false;
+    int allHeight;
+
 
     private boolean isActive;
 
@@ -76,9 +82,11 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     private PopupWindow popupWindow;
     private int pos = 0;
 
+    public ViewPager getViewPager() {
+        return viewPager;
+    }
 
     @Override
-
     public int initView() {
         EventBus.getDefault().register(this);
         return R.layout.activity_main;
@@ -109,7 +117,17 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         popIv.setOnClickListener(this);
 
         acceptBtn.setOnClickListener(this);
-
+        relativeLayout = (RelativeLayout) findViewById(R.id.rl_title);
+        getHeight();
+        // 跳转到土豆详情列表
+        findViewById(R.id.activity_intent_historylist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PotatoListDetailActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
+            }
+        });
 
         // 绑定服务
         Intent serviceIntent = new Intent(this, TomatoService.class);
@@ -139,7 +157,6 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
         int workTime = sharedPreferences.getInt("workTime", 25);
         titleTimer.setText(workTime + ":00");
-
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -209,7 +226,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 startCb.setChecked(false);
                 isShowing = false;
             }
-            if (myBinder.isWorkFinish()){
+            if (myBinder.isWorkFinish()) {
                 setTitleTimer(new CountDownEvent(-1));
             }
         }
@@ -300,7 +317,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
     private void showPopupWindow() {
 
-        TextView finishPopTv,recordPopTv, interruptPopTv, goalPopTv, sharePopTv, preferencesPopTv, helpPopTv;
+        TextView finishPopTv, recordPopTv, interruptPopTv, goalPopTv, sharePopTv, preferencesPopTv, helpPopTv;
 
 
         View view = LayoutInflater.from(this).inflate(R.layout.popup_window, null);
@@ -325,7 +342,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             recordPopTv.setVisibility(View.VISIBLE);
             interruptPopTv.setVisibility(View.VISIBLE);
         }
-        if (pos == 2){
+        if (pos == 2) {
             finishPopTv.setVisibility(View.GONE);
             recordPopTv.setVisibility(View.GONE);
             interruptPopTv.setVisibility(View.GONE);
@@ -339,5 +356,23 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
             }
         });
+    }
+
+    public int getHeight() {
+        // 状态栏高度
+
+        ViewTreeObserver observer = tabLayout.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                int height = tabLayout.getMeasuredHeight();
+                int relHei = relativeLayout.getMeasuredHeight();
+                allHeight = height + relHei;
+                return true;
+            }
+        });
+
+
+        return allHeight;
     }
 }

@@ -1,11 +1,15 @@
 package com.example.dllo.tomatotodo.potatolist;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,58 +17,47 @@ import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
-import com.example.dllo.tomatotodo.base.RecyclerViewCommonAdapter;
-import com.example.dllo.tomatotodo.base.ViewHolder;
-import com.example.dllo.tomatotodo.potatolist.activity.PotatoListDetailActivity;
+import com.example.dllo.tomatotodo.db.DBTools;
+import com.example.dllo.tomatotodo.main.MainActivity;
+import com.example.dllo.tomatotodo.potatolist.activity.EditPotatolistActivity;
+import com.example.dllo.tomatotodo.potatolist.adapter.PhtatoListAdapter;
 import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
-import com.example.dllo.tomatotodo.potatolist.tools.OnRecyclerItemClickListener;
-import com.sch.rfview.AnimRFRecyclerView;
-import com.sch.rfview.decoration.DividerItemDecoration;
-import com.sch.rfview.manager.AnimRFLinearLayoutManager;
+import com.example.dllo.tomatotodo.potatolist.tools.PhtatolistListener;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by dllo on 16/7/16.
  */
-public class PotatoListFragment extends BaseFragment {
+public class PotatoListFragment extends BaseFragment implements PhtatolistListener {
 
     private LinearLayout addLinearLayout;// 添加数据的textview
     private PopupWindow popupWindow;
-    private List<String> datas;
-    private CheckBox finishCb, toTpCb;
+    private List<PhtatoListData> datas;
     private RecyclerView mRecyclerView;
-    private RecyclerViewCommonAdapter<String> adapter;
+    private PhtatoListAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private LinearLayout footerLinearLayout;
-    float x1 = 0;
-    float x2 = 0;
-    float y1 = 0;
-    float y2 = 0;
+    private ViewPager viewPager;
+    private int month = 1;
+    private int day, hour, minute, weeks;
+    private MyReceiver myReceiver;
 
 
-    private RecyclerView recyclerView;
-
-
+    ////////SNACKBAR
     @Override
     public int createView() {
         return R.layout.fragment_potatolist;
@@ -74,23 +67,36 @@ public class PotatoListFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_potatolist_recyclerview);
 
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_potatolist_recyclerview);
         datas = new ArrayList<>();
+        adapter = new PhtatoListAdapter(context);
+        viewPager = ((MainActivity) getActivity()).getViewPager();
+        adapter.setViewPager(viewPager);
         addTotatoList();
         moveItem();
-        add();
-
-
     }
 
     @Override
     public void initData() {
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("editContent");
+        context.registerReceiver(myReceiver, intentFilter);
 
+
+        linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(adapter);
+
+
+        //DBTools.getInstance(context).upDataSingle(data);
+        adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
     }
 
-    // 拖拽item
 
+    // 拖拽item
     public void moveItem() {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
@@ -98,11 +104,14 @@ public class PotatoListFragment extends BaseFragment {
                 int dragFlag;
                 int swipFlag = 0;
                 if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                    //上下左右拖拽
                     dragFlag = ItemTouchHelper.UP | ItemTouchHelper.DOWN |
                             ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
                 } else {
                     dragFlag = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                    swipFlag = ItemTouchHelper.END;// 触发滑动方向
+                    // 滑动删除  方向
+                    //  swipFlag = ItemTouchHelper.START;// 触发滑动方向
+
                 }
                 return makeMovementFlags(dragFlag, swipFlag);
             }
@@ -111,7 +120,7 @@ public class PotatoListFragment extends BaseFragment {
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 int fromPos = viewHolder.getLayoutPosition();
                 int toPos = target.getLayoutPosition();
-                Collections.swap(datas, fromPos, toPos);
+                Collections.swap(DBTools.getInstance(context).queryAll(PhtatoListData.class), fromPos, toPos);
                 adapter.notifyItemMoved(fromPos, toPos);
                 return false;
             }
@@ -128,7 +137,7 @@ public class PotatoListFragment extends BaseFragment {
                 super.onSelectedChanged(viewHolder, actionState);
                 //如果当前状态是空闲的
                 if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                    viewHolder.itemView.setBackgroundColor(Color.RED);
+                    viewHolder.itemView.setBackgroundColor(Color.GRAY);
                 }
             }
 
@@ -144,41 +153,19 @@ public class PotatoListFragment extends BaseFragment {
     //  添加土豆
     public void addTotatoList() {
         addLinearLayout = (LinearLayout) getView().findViewById(R.id.fragment_potatolist_add_linearlayout);
-        adapter = new RecyclerViewCommonAdapter<String>(context, R.layout.item_potatolist_fragment, datas) {
-            @Override
-            public void convert(final ViewHolder holder, String s) {
-                holder.setText(R.id.item_potatolist_tv, s);
-                finishCb = holder.getView(R.id.item_potatolist_finish_checkbox);
-                toTpCb = holder.getView(R.id.item_potatolist_totop_checkbox);
-                finishCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        toTpCb = holder.getView(R.id.item_potatolist_totop_checkbox);
-                        if (isChecked) {
 
-                            toTpCb.setVisibility(View.INVISIBLE);
-                            holder.setTextColor(R.id.item_potatolist_tv, Color.GRAY);
-                        } else {
-                            toTpCb.setVisibility(View.VISIBLE);
-                            holder.setTextColor(R.id.item_potatolist_tv, Color.BLACK);
-                        }
-                    }
-                });
-            }
-        };
         addLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addLinearLayout.setVisibility(View.INVISIBLE);
                 popupWindow = new PopupWindow(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                int height = ((MainActivity) getActivity()).getHeight();
                 final View popupView = LayoutInflater.from(context).inflate(R.layout.fragment_potatolist_add_popupwindow, null);
                 final LinearLayout linearLayout = (LinearLayout) popupView.findViewById(R.id.bg);
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) linearLayout.getLayoutParams();
-                layoutParams.topMargin = 320;
+                layoutParams.topMargin = height;
                 linearLayout.setLayoutParams(layoutParams);
-                linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                mRecyclerView.setLayoutManager(linearLayoutManager);
-                mRecyclerView.setAdapter(adapter);
+
                 // popupWindow 的点击事件  保存数据  添加到集合
                 popupView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -188,7 +175,28 @@ public class PotatoListFragment extends BaseFragment {
                         addLinearLayout.setVisibility(View.VISIBLE);
                         String number = editText.getText().toString();
                         if (number.length() != 0) {
-                            adapter.addSingleData(number);
+                            PhtatoListData data = new PhtatoListData();
+                            data.setContent(number);
+                            // 添加系统时间
+                            Calendar calendar = Calendar.getInstance();
+                            day = calendar.get(Calendar.DAY_OF_MONTH);
+                            month = calendar.get(Calendar.MONTH);
+                            hour = calendar.get(Calendar.HOUR);
+                            minute = calendar.get(Calendar.MINUTE);
+                            weeks = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+
+                            data.setWeeks(weeks);
+                            Log.d("PotatoListFragment", "weeks:" + weeks);
+                            data.setMonth(month);
+                            data.setDay(day);
+                            data.setHour(hour);
+                            data.setMinute(minute);
+                            // 添加checkBox的选中状态
+                            data.setIsItemChecked(false);
+                            data.setTopCheck(false);
+                            datas.add(data);
+                            DBTools.getInstance(context).insertSingle(data);
+                            adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
                         }
                     }
                 });
@@ -203,36 +211,56 @@ public class PotatoListFragment extends BaseFragment {
         });
     }
 
-    public void add() {
-        Log.d("PotatoListFragment", "走了吗");
+    @Override
+    public void onClick(int position) {
 
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //继承了Activity的onTouchEvent方法，直接监听点击事件
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    //当手指按下的时候
-                    x1 = event.getX();
-                    y1 = event.getY();
-                }
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    //当手指离开的时候
-                    x2 = event.getX();
-                    y2 = event.getY();
-                    if (y1 - y2 > 70) {
-                        Toast.makeText(context, "向上", Toast.LENGTH_SHORT).show();
-                        Log.d("PotatoListFragment", "加载");
-                        Intent intent = new Intent(context, PotatoListDetailActivity.class);
-                        context.startActivity(intent);
-
-                    } else if (y2 - y1 > 50) {
-                        Toast.makeText(context, "向下", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return false;
-
-            }
-        });
     }
+//
+//    private String getWeekDay(Calendar c) {
+//        if (c == null) {
+//            return "星期一";
+//        }
+//
+//        if (Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期一";
+//        }
+//        if (Calendar.TUESDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期二";
+//        }
+//        if (Calendar.WEDNESDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期三";
+//        }
+//        if (Calendar.THURSDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期四";
+//        }
+//        if (Calendar.FRIDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期五";
+//        }
+//        if (Calendar.SATURDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期六";
+//        }
+//        if (Calendar.SUNDAY == c.get(Calendar.DAY_OF_WEEK)) {
+//            return "星期日";
+//        }
+//
+//        return "星期一";
+//    }
+
+
+
+    class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
+            Toast.makeText(context, "接收到广播", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        context.unregisterReceiver(myReceiver);
+    }
+
 }
 

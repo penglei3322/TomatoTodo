@@ -19,12 +19,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".potatolist.activity.PotatoListDetailActivity" />
-        <activity android:name=".service.CompleteTimerActivity"/>
-        <activity android:name=".countdowndetail.CountdownDetailActivity"/>
+        <activity android:name=".service.CompleteTimerActivity" />
+        <activity android:name=".countdowndetail.CountdownDetailActivity" />
+
         <service android:name=".service.TomatoService" />
+
         <activity android:name=".preferences.PreferencesActivity" />
         <activity android:name=".preferences.shieldingapplications.ShieldingApplicationsActivity" />
-        <activity android:name=".preferences.shieldingapplications.WarningActivity"></activity>
+        <activity android:name=".preferences.shieldingapplications.WarningActivity" />
+        <activity android:name=".potatolist.activity.EditPotatolistActivity" />
     </application>
 
 </manifest>

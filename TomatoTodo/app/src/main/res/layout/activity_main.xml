@@ -11,6 +11,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/activity_intent_historylist"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="8dp"
@@ -32,15 +33,16 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/action_checkbox"
             android:button="@null" />
+
         <ImageView
             android:id="@+id/title_action_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="40dp"
             android:layout_marginTop="8dp"
-            android:visibility="gone"
             android:src="@mipmap/widget_action_accept_red"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/title_action_pop"
@@ -57,12 +59,12 @@
         android:id="@+id/main_tablayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_title"/>
+        android:layout_below="@+id/rl_title" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/main_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/main_tablayout"/>
+        android:layout_below="@id/main_tablayout" />
 
 </RelativeLayout>

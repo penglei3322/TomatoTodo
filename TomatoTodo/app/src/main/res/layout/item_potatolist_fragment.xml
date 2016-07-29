@@ -1,43 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.dllo.tomatotodo.potatolist.tools.SlidingMenuView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
-    android:orientation="vertical">
+    android:background="#ffffff">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/item_potatolist_finish_checkbox"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:focusable="false"
-            android:background="@drawable/potatolist_fragment_add_checked"
-            android:button="@null" />
-
-
-        <TextView
-            android:id="@+id/item_potatolist_tv"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/item_potatolist_dele_linelayout"
+            android:layout_width="70dp"
             android:layout_height="50dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="123123"
-            android:textColor="#000000"
-            android:textSize="20sp" />
+            android:background="#f10430">
 
-        <CheckBox
-            android:id="@+id/item_potatolist_totop_checkbox"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:focusable="false"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/potatolist_fragment_top"
-            android:button="@null" />
+            <TextView
+                android:id="@+id/deleter"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="15dp"
+                android:text="删除"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/item_weight"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/item_potatolist_finish_checkbox"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/potatolist_fragment_add_checked"
+                android:button="@null"
+                android:focusable="false" />
+
+
+            <TextView
+                android:id="@+id/item_potatolist_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/item_potatolist_finish_checkbox"
+                android:text="123123"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <CheckBox
+                android:id="@+id/item_potatolist_totop_checkbox"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="340dp"
+                android:background="@drawable/potatolist_fragment_top"
+                android:button="@null"
+                android:focusable="false" />
+        </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+</com.example.dllo.tomatotodo.potatolist.tools.SlidingMenuView>

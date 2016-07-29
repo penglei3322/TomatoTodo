@@ -29,4 +29,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile project(':pull')
     compile files('libs/lite-orm-1.9.1.jar')
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3'
+    compile 'com.diegocarloslima:fgelv:0.1.+@aar'
 }

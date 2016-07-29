@@ -8,6 +8,8 @@ import com.litesuits.orm.db.assit.QueryBuilder;
 import java.util.ArrayList;
 
 import com.litesuits.orm.db.assit.WhereBuilder;
+import com.litesuits.orm.db.model.ColumnsValue;
+import com.litesuits.orm.db.model.ConflictAlgorithm;
 
 import java.util.List;
 
@@ -45,6 +47,12 @@ public class DBTools {
         liteOrm.insert(T);
     }
 
+
+    public <T> void upDataSingle(Object T) {
+        liteOrm.update(T);
+    }
+
+
     //插入多条
     public <T> void insertAll(List<Class<T>> list) {
         liteOrm.insert(list);
@@ -56,11 +64,15 @@ public class DBTools {
         liteOrm.deleteAll(tClass);
     }
 
+
     //条件删除
     public <T> void deleteCondition(Class<T> tClass, String columnName, String condition) {
         liteOrm.delete(new WhereBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
     }
 
+//    public <T> void upDataCondition(T t, String columnName) {
+//        liteOrm.update(t, new ColumnsValue(columnName), ConflictAlgorithm.Fail);
+//    }
     //查询指定表所有数据
 
     public <T> List<T> queryAll(Class<T> T) {
