@@ -8,6 +8,7 @@ import android.widget.GridView;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
+import com.example.dllo.tomatotodo.custom.CustomGridViewPoint;
 import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.db.HistoryAllBean;
 
@@ -25,6 +26,8 @@ public class ObjectiveActivity extends BaseActivity {
     private GridView mGridViewLastMonth, mGridViewTwelveWeek, mGridViewTwelveMonth;
     private GridViewAdapter adapter;
 
+    private boolean isFirst = true;
+
 
     @Override
     public int initView() {
@@ -37,10 +40,14 @@ public class ObjectiveActivity extends BaseActivity {
         mGridViewLastMonth.setVerticalSpacing(30);
         adapter = new GridViewAdapter(this);
         getLastThirtyData();
-        mGridViewLastMonth.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter.setOnOtherItemClickListener(new GridViewAdapter.OnOtherItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            public void onOtherItemClick(CustomGridViewPoint customGridViewPoint) {
+                if (!isFirst) {
+                    customGridViewPoint.setTouch(false);
+                    isFirst = false;
+                }
+                isFirst = false;
             }
         });
     }
@@ -61,7 +68,7 @@ public class ObjectiveActivity extends BaseActivity {
                 monthAgoList.add(historyAllBean);
             }
         }
-        adapter.setBeanArrayList(monthAgoList);
+        adapter.setBeanArrayList(monthAgoList,1);
         mGridViewLastMonth.setAdapter(adapter);
 
     }
