@@ -4,26 +4,21 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.provider.ContactsContract;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.dllo.tomatotodo.MyApp;
+import com.example.dllo.tomatotodo.base.MyApp;
 import com.example.dllo.tomatotodo.db.HistoryAllBean;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by dllo on 16/7/25.

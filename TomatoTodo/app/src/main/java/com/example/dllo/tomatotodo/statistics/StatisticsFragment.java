@@ -7,9 +7,9 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.example.dllo.tomatotodo.MyApp;
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
+import com.example.dllo.tomatotodo.base.MyApp;
 import com.example.dllo.tomatotodo.custom.CustomClock;
 import com.example.dllo.tomatotodo.custom.CustomHistogramView;
 import com.example.dllo.tomatotodo.custom.CustomLineChartView;

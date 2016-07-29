@@ -10,7 +10,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.dllo.tomatotodo.MyApp;
+import com.example.dllo.tomatotodo.base.MyApp;
 
 /**
  * Created by dllo on 16/7/28.

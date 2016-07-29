@@ -27,7 +27,9 @@ public class BlockUtils {
     }
 
     private static boolean isMyServiceRunning(Activity instance, Class<?> serviceClass) {
+        // 活动管理器, 有很多系统的应用可以通过调用getSystemService（）方法实例化对象
         ActivityManager manager = (ActivityManager) instance.getSystemService(Context.ACTIVITY_SERVICE);
+        // Android系统提供了一个函数ActivityManager.getRunningServices可以列出当前正在运行的后台服务线程
         for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;

@@ -21,4 +21,10 @@
         <item name="android:paddingBottom">10dip</item>
     </style>
 
+    <style name="Login_Radio_Button">
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+
+    </style>
+
 </resources>

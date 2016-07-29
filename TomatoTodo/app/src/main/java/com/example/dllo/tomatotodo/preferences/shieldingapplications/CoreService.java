@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.example.dllo.tomatotodo.preferences.shieldingapplications.util.BlockUtils;
 import com.example.dllo.tomatotodo.preferences.shieldingapplications.util.Logger;
@@ -44,13 +45,14 @@ public class CoreService extends Service {
 
             if (componentName != null) {
                 packageName = componentName.getPackageName();
-                Logger.getLogger().i("packageName:" + packageName);
+//                Logger.getLogger().i("packageName:" + packageName);
+                Log.d("CoreService","当前包名" + packageName);
             } else {
                 Logger.getLogger().e("getTopActivity Error!");
             }
 
             if (mBlockList != null && mBlockList.contains(packageName)) {
-
+                Log.d("CoreService", "应该跳转");
                 Intent intent = new Intent(getApplicationContext(), WarningActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -68,7 +70,7 @@ public class CoreService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d("CoreService", "服务已开启");
         mContext = this;
         mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 

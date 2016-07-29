@@ -6,47 +6,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-
-import android.graphics.drawable.BitmapDrawable;
-
 import android.graphics.Color;
-
+import android.graphics.drawable.ColorDrawable;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-
 import android.view.LayoutInflater;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
-
-import android.widget.ImageView;
-
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
 import com.example.dllo.tomatotodo.countdowndetail.CountdownDetailActivity;
-import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
-
 import com.example.dllo.tomatotodo.potatolist.activity.PotatoListDetailActivity;
 import com.example.dllo.tomatotodo.preferences.PreferencesActivity;
-
 import com.example.dllo.tomatotodo.service.CompleteTimerActivity;
-
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
 import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
@@ -319,9 +306,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         TextView finishPopTv, recordPopTv, interruptPopTv, goalPopTv, sharePopTv, preferencesPopTv, helpPopTv;
 
-
         View view = LayoutInflater.from(this).inflate(R.layout.popup_window, null);
-
 
         popupWindow = new PopupWindow(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         finishPopTv = (TextView) view.findViewById(R.id.pop_finish);
@@ -332,10 +317,26 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         preferencesPopTv = (TextView) view.findViewById(R.id.pop_preferences);
         helpPopTv = (TextView) view.findViewById(R.id.pop_help);
         popupWindow.setContentView(view);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        ColorDrawable cd = new ColorDrawable(0x000000);
+        popupWindow.setBackgroundDrawable(cd);
+        //产生背景变暗效果
+        WindowManager.LayoutParams lp=getWindow().getAttributes();
+        lp.alpha = 0.4f;
+        getWindow().setAttributes(lp);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         popupWindow.showAsDropDown(tabLayout, tabLayout.getWidth(), -tabLayout.getHeight());
+
+        // //在dismiss中恢复透明度
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                WindowManager.LayoutParams lp=getWindow().getAttributes();
+                lp.alpha = 1f;
+                getWindow().setAttributes(lp);
+            }
+        });
 
         if (pos == 1) {
             finishPopTv.setVisibility(View.GONE);

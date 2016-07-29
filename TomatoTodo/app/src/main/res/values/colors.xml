@@ -21,4 +21,7 @@
     <color name="listview_split">#dadada</color>
     <color name="listview_bg_sel">#d9d9d9</color>
 
+    <color name="btn_login_selector_down">#E3E3E3</color>
+    <color name="btn_login_selector_up">#F9F9F9</color>
+
 </resources>

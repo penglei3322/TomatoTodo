@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.example.dllo.tomatotodo.MyApp;
+import com.example.dllo.tomatotodo.base.MyApp;
 
 import java.util.HashMap;
 

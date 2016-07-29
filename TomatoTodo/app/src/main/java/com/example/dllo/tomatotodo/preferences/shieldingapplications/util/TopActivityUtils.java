@@ -97,7 +97,7 @@ public class TopActivityUtils {
         try {
             list = packageMgr.queryIntentActivities(intent, 0);
         } catch (final Exception e) {
-            /* 部分ROM上面调用queryIntentActivities会抛出空指针异常，只能保护 */
+            // 部分ROM上面调用queryIntentActivities会抛出空指针异常，只能保护
             list = new ArrayList<>(1);
         }
 
