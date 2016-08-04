@@ -1,5 +1,6 @@
 package com.example.dllo.tomatotodo.preferences.lengthoftime;
 
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -53,14 +54,21 @@ public class LengthOfTimeActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
         switch (seekBar.getId()){
 
             case R.id.length_of_time_seek_bar:
                 timeTv.setText((progress + 10) + "min");
+                editor.putInt("workTime", progress + 10);
+                editor.commit();
                 break;
 
             case R.id.length_of_time_rest_seek_bar:
                 timeRestTv.setText((progress + 1) + "min");
+                editor.putInt("restTime", progress + 1);
+                editor.commit();
                 break;
         }
     }

@@ -22,7 +22,7 @@ public class ReturnView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        lenth = 80;
+        lenth = 60;
         setMeasuredDimension(lenth, lenth);
     }
 
@@ -30,6 +30,7 @@ public class ReturnView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Paint paint = new Paint();
+        paint.setStrokeWidth(6);
         paint.setColor(Color.RED);
         canvas.drawLine(0, lenth / 2, lenth/2, 0, paint);
         canvas.drawLine(0, lenth / 2, lenth/2, lenth, paint);

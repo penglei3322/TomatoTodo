@@ -23,18 +23,23 @@ public class CustomGridViewPoint extends View {
     private Paint mPaintOut;
     private Paint mPaintNum;
 
+    private int type;
+
     //屏幕宽度
     private int mWidth;
     private int mHeight;
     private int progress;
     private boolean isTouch = false;
 
-    public void setProgress(int progress) {
+    public void setProgress(int progress,int type) {
         this.progress = progress;
+        this.type = type;
         invalidate();
     }
 
-
+    public int getProgress() {
+        return progress;
+    }
 
     public CustomGridViewPoint(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -73,7 +78,13 @@ public class CustomGridViewPoint extends View {
         canvas.drawCircle(mWidth / 2, mWidth / 2, mWidth / 2, mPaintInside);
         RectF rectF = new RectF(0, 0, mWidth, mWidth);
         mPaintArc.setColor(Color.GREEN);
-        canvas.drawArc(rectF, -90, progress * 360 / 8, true, mPaintArc);
+        if (type == 1){
+            canvas.drawArc(rectF, -90, progress * 360 / 8, true, mPaintArc);
+        } else if (type == 2) {
+            canvas.drawArc(rectF, -90, progress * 360 / 40, true, mPaintArc);
+        } else {
+            canvas.drawArc(rectF, -90, progress * 360 / 160, true, mPaintArc);
+        }
         if (isTouch) {
             mPaintOut.setColor(Color.parseColor("#F0F0F0"));
             canvas.drawCircle(mWidth / 2, mWidth / 2, mWidth / 2 - 10, mPaintOut);
@@ -99,7 +110,9 @@ public class CustomGridViewPoint extends View {
                 }
                 invalidate();
                 break;
+            case MotionEvent.ACTION_MOVE:
 
+                break;
         }
 
         return super.dispatchTouchEvent(event);

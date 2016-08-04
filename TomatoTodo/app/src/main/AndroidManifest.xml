@@ -51,7 +51,7 @@
         <activity android:name=".preferences.shieldingapplications.WarningActivity" />
         <activity android:name=".potatolist.activity.EditPotatolistActivity" />
         <activity android:name=".statistics.object.ObjectiveActivity" />
-
+        <activity android:name=".statistics.ObjectOptionsActivity"/>
         <service android:name=".preferences.shieldingapplications.CoreService" />
 
         <activity android:name=".preferences.lengthoftime.LengthOfTimeActivity" />
