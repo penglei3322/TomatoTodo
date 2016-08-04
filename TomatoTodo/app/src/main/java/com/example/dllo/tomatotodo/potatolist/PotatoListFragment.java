@@ -192,7 +192,6 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
                             datas.add(data);
                             DBTools.getInstance(context).insertSingle(data);
                             adapter.addData(data);
-                            //   adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
                         }
                     }
                 });
@@ -211,12 +210,6 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
     public void onClick(int position) {
 
     }
-//
-//    private String getWeekDay(Calendar c) {
-//        if (c == null) {
-//            return "星期一";
-//        }
-//
 
 
     class MyReceiver extends BroadcastReceiver {
@@ -224,8 +217,6 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
         public void onReceive(Context context, Intent intent) {
             adapter.editData(DBTools.getInstance(context).queryAll(PhtatoListData.class));
 
-            //adapter.editData(DBTools.getInstance(context).queryChecked(PhtatoListData.class, "topCheck", true));
-            //adapter.editData(DBTools.getInstance(context).queryChecked(PhtatoListData.class,"topCheck",false));
         }
     }
 
