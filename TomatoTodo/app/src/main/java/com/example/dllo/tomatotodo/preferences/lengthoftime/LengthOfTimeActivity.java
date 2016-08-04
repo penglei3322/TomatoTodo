@@ -30,13 +30,20 @@ public class LengthOfTimeActivity extends BaseActivity implements View.OnClickLi
         timeRestTv = (TextView) findViewById(R.id.length_of_time_rest_text);
         barTv = (TextView) findViewById(R.id.bar_text);
 
-        timeTv.setText("10min");
-        timeRestTv.setText("1min");
+
         barTv.setText("番茄时长");
 
         finishIv.setOnClickListener(this);
         timeSeekBar.setOnSeekBarChangeListener(this);
         timeRestSeekBar.setOnSeekBarChangeListener(this);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
+        timeSeekBar.setProgress(sharedPreferences.getInt("workTime", 25) - 10);
+        timeRestSeekBar.setProgress(sharedPreferences.getInt("restTime",5) - 1);
+
+        timeTv.setText(sharedPreferences.getInt("workTime", 25) + "min");
+        timeRestTv.setText(sharedPreferences.getInt("restTime", 5) +"min");
+
     }
 
     @Override
@@ -53,24 +60,17 @@ public class LengthOfTimeActivity extends BaseActivity implements View.OnClickLi
     // 数值改变（onProgressChanged）
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
         switch (seekBar.getId()){
 
             case R.id.length_of_time_seek_bar:
-                timeTv.setText((progress + 10) + "min");
-                editor.putInt("workTime", progress + 10);
-                editor.commit();
+                timeTv.setText((seekBar.getProgress() + 10) + "min");
                 break;
 
             case R.id.length_of_time_rest_seek_bar:
-                timeRestTv.setText((progress + 1) + "min");
-                editor.putInt("restTime", progress + 1);
-                editor.commit();
+                timeRestTv.setText((seekBar.getProgress() + 1) + "min");
                 break;
         }
+
     }
 
     // 开始拖动（onStartTrackingTouch）
@@ -81,5 +81,22 @@ public class LengthOfTimeActivity extends BaseActivity implements View.OnClickLi
     // 停止拖动（onStopTrackingTouch）
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        switch (seekBar.getId()){
+
+            case R.id.length_of_time_seek_bar:
+                timeTv.setText((seekBar.getProgress() + 10) + "min");
+                editor.putInt("workTime", seekBar.getProgress() + 10);
+                editor.commit();
+                break;
+
+            case R.id.length_of_time_rest_seek_bar:
+                timeRestTv.setText((seekBar.getProgress() + 1) + "min");
+                editor.putInt("restTime", seekBar.getProgress() + 1);
+                editor.commit();
+                break;
+        }
     }
 }

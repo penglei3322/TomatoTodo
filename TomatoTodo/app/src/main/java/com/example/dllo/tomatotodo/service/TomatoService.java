@@ -6,27 +6,23 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.media.SoundPool;
 import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.dllo.tomatotodo.R;
+import com.example.dllo.tomatotodo.countdowndetail.CompleteTimerActivity;
 import com.example.dllo.tomatotodo.countdowndetail.CountdownDetailActivity;
 import com.example.dllo.tomatotodo.main.MainActivity;
-import com.litesuits.orm.LiteOrm;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
 
 /**
  * Created by zly on 16/7/18.

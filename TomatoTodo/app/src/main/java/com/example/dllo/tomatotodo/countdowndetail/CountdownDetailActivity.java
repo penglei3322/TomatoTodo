@@ -8,24 +8,19 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
-import com.example.dllo.tomatotodo.service.CompleteTimerActivity;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -92,6 +87,9 @@ public class CountdownDetailActivity extends BaseActivity implements CompoundBut
         };
         bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
 
+
+        SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
+        timeTv.setText(sharedPreferences.getInt("workTime", 25) + ":00");
 
     }
 

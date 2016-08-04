@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".potatolist.activity.PotatoListDetailActivity" />
-        <activity android:name=".service.CompleteTimerActivity" />
+        <activity android:name=".countdowndetail.CompleteTimerActivity" />
         <activity android:name=".countdowndetail.CountdownDetailActivity" />
 
         <service android:name=".service.TomatoService" />
