@@ -14,6 +14,7 @@ public class CustomTextView extends TextView{
         super(context, attrs);
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()){
@@ -31,11 +32,8 @@ public class CustomTextView extends TextView{
 
 
         }
-
-        return true;
+        return super.onTouchEvent(event);
     }
-
-
 
 
 }

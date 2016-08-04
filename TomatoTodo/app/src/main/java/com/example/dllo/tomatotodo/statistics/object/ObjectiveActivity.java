@@ -1,6 +1,10 @@
 package com.example.dllo.tomatotodo.statistics.object;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -37,18 +41,23 @@ public class ObjectiveActivity extends BaseActivity {
     private ArrayList<HistoryAllBean> curMonthList;
 
 
-
     private GridView mGridViewLastMonth, mGridViewTwelveWeek, mGridViewTwelveMonth;
     private GridViewAdapter adapterLastMonth, adapterLastTwelveWeek, adapterLastTwelveMonth;
 
     private ProgressBar mLastMonthProgressBar, mLastTwelveWeekProgressBar, mLastTwelveMonthProgressBar;
 
-    private TextView lastMonthComplete,lastMonthAva,lastMonthRate;
+    private TextView lastMonthComplete, lastMonthAva, lastMonthRate;
     private TextView lastTwelveWeekComplete, lastTwelveWeekAva, lastTwelveWeekRate;
-    private TextView lastTwelveMonthComplete,lastTwelveMonthAva,lastTwelveMonthRate;
-    private TextView mCurDayProgress , mCurWeekProgress, mCurMonthProgress;
+    private TextView lastTwelveMonthComplete, lastTwelveMonthAva, lastTwelveMonthRate;
+    private TextView mCurDayProgress, mCurWeekProgress, mCurMonthProgress;
 
-    private TextView tvReturn,tvOptions;
+    private TextView tvReturn, tvOptions;
+
+    private int objectDay, objectWeek, objectMonth;
+
+    private TextView mEveryDayObject, mEveryWeekObject, mEveryMonthObject;
+
+    private objectReceiver receiver;
 
     @Override
     public int initView() {
@@ -82,12 +91,26 @@ public class ObjectiveActivity extends BaseActivity {
         tvReturn = (TextView) findViewById(R.id.tv_object_return);
         tvOptions = (TextView) findViewById(R.id.tv_object_options);
 
+        mEveryDayObject = (TextView) findViewById(R.id.tv_object_every_day);
+        mEveryWeekObject = (TextView) findViewById(R.id.tv_object_every_week);
+        mEveryMonthObject = (TextView) findViewById(R.id.tv_object_every_month);
+
         mGridViewLastMonth.setVerticalSpacing(30);
         mGridViewTwelveWeek.setVerticalSpacing(30);
         mGridViewTwelveMonth.setVerticalSpacing(30);
         adapterLastMonth = new GridViewAdapter(this);
         adapterLastTwelveWeek = new GridViewAdapter(this);
         adapterLastTwelveMonth = new GridViewAdapter(this);
+
+        receiver = new objectReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("refresh");
+        registerReceiver(receiver,filter);
+
+        //获取sp
+        getSp();
+
+
 
         tvReturn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,18 +128,17 @@ public class ObjectiveActivity extends BaseActivity {
         });
 
 
-
         adapterLastMonth.setOnOtherItemClickListener(new GridViewAdapter.OnOtherItemClickListener() {
             @Override
             public void onOtherItemClick(CustomGridViewPoint customGridViewPoint) {
-                    customGridViewPoint.setTouch(false);
+                customGridViewPoint.setTouch(false);
             }
         });
 
         adapterLastTwelveWeek.setOnOtherItemClickListener(new GridViewAdapter.OnOtherItemClickListener() {
             @Override
             public void onOtherItemClick(CustomGridViewPoint customGridViewPoint) {
-                    customGridViewPoint.setTouch(false);
+                customGridViewPoint.setTouch(false);
             }
         });
 
@@ -137,8 +159,22 @@ public class ObjectiveActivity extends BaseActivity {
 
     }
 
+    //获取存好的SharedPreferences
+    private void getSp() {
+
+        SharedPreferences sp = getSharedPreferences("object", MODE_PRIVATE);
+        objectDay = sp.getInt("objectDay", 8);
+        objectWeek = sp.getInt("objectWeek", 40);
+        objectMonth = sp.getInt("objectMonth", 160);
+
+        mEveryDayObject.setText("每日目标: "+objectDay+"");
+        mEveryWeekObject.setText("每周目标: "+objectWeek+"");
+        mEveryMonthObject.setText("每月目标: "+objectMonth+"");
+
+    }
+
     // 获取过去30天的数据并设置到gridView上
-    public void getLastThirtyData(){
+    public void getLastThirtyData() {
         //30天前 获取30天前的日期(Java)
         Calendar theCa = Calendar.getInstance();
         theCa.setTime(new Date());
@@ -153,7 +189,7 @@ public class ObjectiveActivity extends BaseActivity {
                 monthAgoList.add(historyAllBean);
             }
         }
-        adapterLastMonth.setBeanArrayList(monthAgoList,1);
+        adapterLastMonth.setBeanArrayList(monthAgoList, 1);
         mGridViewLastMonth.setAdapter(adapterLastMonth);
 
         DecimalFormat format = new DecimalFormat("##0.00");
@@ -161,7 +197,7 @@ public class ObjectiveActivity extends BaseActivity {
         lastMonthAva.setText(format.format(monthAgoList.size() / 30f) + "");
         int num = 0;
         for (Integer integer : adapterLastMonth.getNumPerTimeList()) {
-            if (integer >= 8){
+            if (integer >= objectDay) {
                 num++;
             }
         }
@@ -170,10 +206,10 @@ public class ObjectiveActivity extends BaseActivity {
     }
 
     // 获取过去12周的数据并设置到gridView上
-    public void getLastTwelveWeekData(){
+    public void getLastTwelveWeekData() {
         lastTwelveDataList = new ArrayList<>();
         for (HistoryAllBean historyAllBean : DBTools.getInstance(this).queryAll(HistoryAllBean.class)) {
-            if (historyAllBean.getStartTime() > getCurWeekStartTime() + 11 * 7 * 24 * 60 * 60 * 1000){
+            if (historyAllBean.getStartTime() > getCurWeekStartTime() + 11 * 7 * 24 * 60 * 60 * 1000) {
                 lastTwelveDataList.add(historyAllBean);
             }
         }
@@ -185,7 +221,7 @@ public class ObjectiveActivity extends BaseActivity {
         lastTwelveWeekAva.setText(format.format(lastTwelveDataList.size() / 12f) + "");
         int num = 0;
         for (Integer integer : adapterLastTwelveWeek.getNumPerTimeList()) {
-            if (integer >= 40){
+            if (integer >= objectWeek) {
                 num++;
             }
         }
@@ -194,17 +230,17 @@ public class ObjectiveActivity extends BaseActivity {
 
 
     // 获取过去12个月的数据并设置到gridView上
-    public void getLastTwelveMonthData(){
+    public void getLastTwelveMonthData() {
         lastTwelveMonthList = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)+1); //要先+1,才能把本月的算进去
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 1); //要先+1,才能把本月的算进去
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 12);
-        cal.set(Calendar.DAY_OF_MONTH,1);
-        cal.set(Calendar.HOUR_OF_DAY,0);
-        cal.set(Calendar.MINUTE,0);
-        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         for (HistoryAllBean historyAllBean : DBTools.getInstance(this).queryAll(HistoryAllBean.class)) {
-            if (historyAllBean.getStartTime() > cal.getTime().getTime()){
+            if (historyAllBean.getStartTime() > cal.getTime().getTime()) {
                 lastTwelveMonthList.add(historyAllBean);
             }
         }
@@ -216,7 +252,7 @@ public class ObjectiveActivity extends BaseActivity {
         lastTwelveMonthAva.setText(format.format(lastTwelveMonthList.size() / 12f) + "");
         int num = 0;
         for (Integer integer : adapterLastTwelveMonth.getNumPerTimeList()) {
-            if (integer >= 160){
+            if (integer >= objectMonth) {
                 num++;
             }
         }
@@ -225,47 +261,47 @@ public class ObjectiveActivity extends BaseActivity {
     }
 
     // 获取当日数据
-    public void getCurrentDayData(){
+    public void getCurrentDayData() {
         curDayList = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         for (HistoryAllBean historyAllBean : DBTools.getInstance(this).queryAll(HistoryAllBean.class)) {
-            if (simpleDateFormat.format(historyAllBean.getStartTime()).equals(simpleDateFormat.format(new Date()))){
+            if (simpleDateFormat.format(historyAllBean.getStartTime()).equals(simpleDateFormat.format(new Date()))) {
                 curDayList.add(historyAllBean);
             }
         }
-        mLastMonthProgressBar.setMax(8);
+        mLastMonthProgressBar.setMax(objectDay);
         mLastMonthProgressBar.setProgress(curDayList.size());
-        mCurDayProgress.setText(curDayList.size() + "/8");
+        mCurDayProgress.setText(curDayList.size() + "/" + objectDay);
     }
 
     // 获取本周数据
-    public void getCurrentWeekData(){
+    public void getCurrentWeekData() {
         curWeekList = new ArrayList<>();
         for (HistoryAllBean historyAllBean : DBTools.getInstance(this).queryAll(HistoryAllBean.class)) {
-            if (historyAllBean.getStartTime() > getCurWeekStartTime()){
+            if (historyAllBean.getStartTime() > getCurWeekStartTime()) {
                 curWeekList.add(historyAllBean);
             }
         }
-        mLastTwelveWeekProgressBar.setMax(40);
+        mLastTwelveWeekProgressBar.setMax(objectWeek);
         mLastTwelveWeekProgressBar.setProgress(curWeekList.size());
-        mCurWeekProgress.setText(curWeekList.size() + "/40");
+        mCurWeekProgress.setText(curWeekList.size() + "/" + objectWeek);
     }
 
     // 获取本月数据
-    public void getCurrentMonthData(){
+    public void getCurrentMonthData() {
         curMonthList = new ArrayList<>();
         for (HistoryAllBean historyAllBean : DBTools.getInstance(this).queryAll(HistoryAllBean.class)) {
-            if (historyAllBean.getStartTime() > getCurMonthStartTime()){
+            if (historyAllBean.getStartTime() > getCurMonthStartTime()) {
                 curMonthList.add(historyAllBean);
             }
         }
-        mLastTwelveMonthProgressBar.setMax(160);
+        mLastTwelveMonthProgressBar.setMax(objectMonth);
         mLastTwelveMonthProgressBar.setProgress(curMonthList.size());
-        mCurMonthProgress.setText(curMonthList.size() + "/160");
+        mCurMonthProgress.setText(curMonthList.size() + "/" + objectMonth);
     }
 
     // 获取本周开始时间
-    public long getCurWeekStartTime(){
+    public long getCurWeekStartTime() {
         Calendar currentDate = new GregorianCalendar();
         currentDate.setFirstDayOfWeek(Calendar.MONDAY);
         currentDate.set(Calendar.HOUR_OF_DAY, 0);
@@ -276,7 +312,7 @@ public class ObjectiveActivity extends BaseActivity {
     }
 
     // 获取当月开始的时间
-    public long getCurMonthStartTime(){
+    public long getCurMonthStartTime() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 1); //要先+1,才能把本月的算进去
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 1);
@@ -286,5 +322,20 @@ public class ObjectiveActivity extends BaseActivity {
         cal.set(Calendar.SECOND, 0);
         return cal.getTime().getTime();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+
+    class objectReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //调取方法刷新界面
+            getSp();
+        }
+    }
+
 
 }
