@@ -39,6 +39,7 @@ public class TopActivityUtils {
      * @param activityManager
      * @return
      */
+    // ComponentName（组件名称）是用来打开其他应用程序中的Activity或服务的
     public static ComponentName getTopActivity(Context context, ActivityManager activityManager) {
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -52,6 +53,9 @@ public class TopActivityUtils {
         } else {
             List<ActivityManager.RunningTaskInfo> lstTask;
             try {
+                // getRunningTasks()方法, 意味着我们在5.0以后不能通过该方法获取正在运行的应用程序，
+                // google在5.0又提供类新的api，
+                // 可以通过ActivityManager的getRunningAppProcesses()方法获取正在运行的应用程序
                 lstTask = activityManager.getRunningTasks(1);
             } catch (final Exception e) {
                 if (DEBUG) {
@@ -75,7 +79,7 @@ public class TopActivityUtils {
     }
 
     /**
-     * 通过packageName获取当前入口Activity
+     * 通过 packageName 获取当前入口Activity
      *
      * @param context
      * @param packageName
@@ -246,6 +250,7 @@ public class TopActivityUtils {
      */
     private static List getUsageStatsList(Context context) {
 
+        // 获取各个应用运行的情况
         try {
             Class clazz = Class.forName("android.app.usage.UsageStatsManager");
             Object receiver = context.getSystemService("usagestats");
@@ -274,6 +279,13 @@ public class TopActivityUtils {
      */
     public static String getTopPackageByUsageStats(Context context) {
         if (context == null) {
+            // throw关键字通常用在方法体中，并且抛出一个异常对象。
+            // 程序在执行到throw语句时立即停止，它后面的语句都不执行。
+            // 通过throw抛出异常后，如果想在上一级代码中来捕获并处理异常，
+            // 则需要在抛出异常的方法中使用throws关键字在方法声明中指明要跑出的异常；
+            // 如果要捕捉throw抛出的异常，则必须使用try—catch语句
+
+            // 当调用getTopPackageByUsageStats的方法content不能空
             throw new IllegalArgumentException("context can not be null when call getTopPackageByUsageStats(...)");
         }
 

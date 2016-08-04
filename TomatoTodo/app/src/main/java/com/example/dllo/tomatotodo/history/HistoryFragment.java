@@ -1,6 +1,8 @@
 package com.example.dllo.tomatotodo.history;
 
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -97,6 +99,15 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 return true;
+            }
+        });
+        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+
+                ShowAlertDialog();
+
+                return false;
             }
         });
     }
@@ -212,5 +223,19 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
+    private void ShowAlertDialog() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("删除");
+        builder.setMessage("您可以点击确定来删除这条历史记录");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
 }

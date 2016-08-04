@@ -1,0 +1,3 @@
+通过一个后台Service来监控位于当前Task最顶端的Activity名字是否位于要屏蔽的List中，
+如果位于task最顶部的Activity（即用户刚刚打开的那个Activity）包含在需要屏蔽的List中，
+则弹出一个不可操作Activity
