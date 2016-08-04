@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,10 +16,12 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
+import com.example.dllo.tomatotodo.potatolist.tools.PhtatolistListener;
 import com.example.dllo.tomatotodo.potatolist.tools.SlidingMenuView;
 
 import java.util.Collections;
@@ -27,7 +30,7 @@ import java.util.List;
 /**
  * Created by dllo on 16/7/20.
  */
-public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.MyViewHolder> implements SlidingMenuView.SlidingListener {
+public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.MyViewHolder> implements SlidingMenuView.SlidingListener{
 
     private List<PhtatoListData> datas;
     private Context context;
@@ -45,7 +48,9 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     }
 
     public void setDatas(List<PhtatoListData> datas) {
+        if (this.datas ==null)
         this.datas = datas;
+        else this.datas.addAll(datas);
         notifyDataSetChanged();
     }
 
@@ -105,7 +110,7 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
                 CheckBox checkBox = (CheckBox) v;
                 data.setTopCheck(checkBox.isChecked());
                 if (!datas.get(pos).isTopCheck()) {
-                    Collections.swap(DBTools.getInstance(context).queryAll(PhtatoListData.class), pos, datas.size() - 1);
+                    Collections.swap(datas, pos, datas.size() - 1);
                     notifyItemMoved(pos, datas.size() - 1);
                 } else {
                     Collections.swap(datas, 0, pos);
@@ -115,14 +120,26 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
 //TODO 更改数据库
                 DBTools.getInstance(context).upDataSingle(data);
 
+
+
             }
         });
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                                                    @Override
                                                    public void onClick(View v) {
-                                                       int pos = holder.getLayoutPosition();
-                                                       PhtatoListData data = datas.get(pos);
+                                                       final int pos = holder.getLayoutPosition();
+                                                       final PhtatoListData data = datas.get(pos);
+                                                       Snackbar.make(holder.linearLayout, "已删除" + data.getContent(), Snackbar.LENGTH_LONG).
+                                                               setAction("撤销删除", new View.OnClickListener() {
+                                                                   @Override
+                                                                   public void onClick(View v) {
+                                                                       Toast.makeText(context, "已撤销 ", Toast.LENGTH_SHORT).show();
+                                                                       datas.add(pos, data);
+                                                                       DBTools.getInstance(context).insertSingle(data);
+                                                                       notifyItemInserted(pos);
+                                                                   }
+                                                               }).setActionTextColor(Color.RED).show();
                                                        DBTools.getInstance(context).deleteCondition(PhtatoListData.class, "content", data.getContent());
                                                        datas.remove(pos);
                                                        notifyItemRemoved(pos);
@@ -160,6 +177,9 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
         this.slidingMenuView = slidingMenuView;
     }
 
+
+
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         CheckBox okCheck, topCheck;
@@ -179,3 +199,4 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     }
 
 }
+

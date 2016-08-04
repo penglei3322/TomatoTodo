@@ -16,12 +16,13 @@ public class PhtatoListData {
 
     @NotNull
     private String content;
-    private String pos;
+    private int pos;
     private boolean Checked = false;
     private boolean topCheck = false;
     private int month;
     private int day;
     private int hour,minute,weeks;
+    private String describe;
 
     private long getData(){
         Date date = new Date(2016,month,day,hour,minute);
@@ -80,11 +81,11 @@ public class PhtatoListData {
         this.id = id;
     }
 
-    public String getPos() {
+    public int getPos() {
         return pos;
     }
 
-    public void setPos(String pos) {
+    public void setPos(int pos) {
         this.pos = pos;
     }
 
@@ -106,5 +107,13 @@ public class PhtatoListData {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 }

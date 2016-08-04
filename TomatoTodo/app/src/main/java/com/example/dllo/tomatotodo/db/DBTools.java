@@ -2,6 +2,7 @@ package com.example.dllo.tomatotodo.db;
 
 import android.content.Context;
 
+import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
 import com.litesuits.orm.LiteOrm;
 import com.litesuits.orm.db.assit.QueryBuilder;
 
@@ -64,15 +65,21 @@ public class DBTools {
         liteOrm.deleteAll(tClass);
     }
 
+    //指定更新某条数据
+    public void upData(String oldContext, String newContext) {
+        QueryBuilder<PhtatoListData> queryBuilder = new QueryBuilder<>(PhtatoListData.class);
+        queryBuilder.whereEquals("content", oldContext);
+        for (PhtatoListData data : liteOrm.query(queryBuilder)) {
+            data.setContent(newContext);
+            liteOrm.update(data);
+        }
+    }
 
     //条件删除
     public <T> void deleteCondition(Class<T> tClass, String columnName, String condition) {
         liteOrm.delete(new WhereBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
     }
 
-//    public <T> void upDataCondition(T t, String columnName) {
-//        liteOrm.update(t, new ColumnsValue(columnName), ConflictAlgorithm.Fail);
-//    }
     //查询指定表所有数据
 
     public <T> List<T> queryAll(Class<T> T) {
@@ -85,6 +92,13 @@ public class DBTools {
     public <T> List<T> queryCondition(Class<T> tClass, String columnName, String condition) {
         List<T> list = new ArrayList();
         list = liteOrm.query(new QueryBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
+        return list;
+    }
+
+    // 条件查询, checkBox的选中状态
+    public <T> List<T> queryChecked(Class<T> tClass, String columnName, boolean condition) {
+        List<T> list = new ArrayList<>();
+        list = liteOrm.query(new QueryBuilder<T>(tClass).where(columnName + " LIKE ?", new Boolean[]{condition}));
         return list;
     }
 
