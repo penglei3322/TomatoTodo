@@ -85,11 +85,8 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         mTitleTimer = (TextView) findViewById(R.id.title_timer);
         mStartCb = (CheckBox) findViewById(R.id.title_action_checkbox);
-
         mAcceptBtn = (ImageView) findViewById(R.id.title_action_accept);
-
         mPopIv = (ImageView) findViewById(R.id.title_action_pop);
-
         mFragmentsList = new ArrayList<>();
         mFragmentsList.add(new PotatoListFragment());
         mFragmentsList.add(new HistoryFragment());
