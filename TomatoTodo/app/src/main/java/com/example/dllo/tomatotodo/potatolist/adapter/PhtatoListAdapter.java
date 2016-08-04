@@ -25,6 +25,7 @@ import com.example.dllo.tomatotodo.potatolist.tools.PhtatolistListener;
 import com.example.dllo.tomatotodo.potatolist.tools.SlidingMenuView;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -77,7 +78,7 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         holder.textView.setText(datas.get(position).getContent());
         final PhtatoListData data = datas.get(position);
         DBTools.getInstance(context).queryAll(PhtatoListData.class);
@@ -120,11 +121,19 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
                 CheckBox checkBox = (CheckBox) v;
                 data.setTopCheck(checkBox.isChecked());
                 if (!datas.get(pos).isTopCheck()) {
-                    Collections.swap(datas, pos, datas.size() - 1);
+                 //   Collections.(datas, pos, datas.size() - 1);
+                    PhtatoListData listData = datas.get(pos);
+                    datas.remove(listData);
+                    datas.add(listData);
                     notifyItemMoved(pos, datas.size() - 1);
                 } else {
-                    Collections.swap(datas, 0, pos);
+                    //Collections.swap(datas, 0, pos);
+                    PhtatoListData listData = datas.get(pos);
+                    datas.remove(listData);
+                    datas.add(0,listData);
                     notifyItemMoved(pos, 0);
+                }
+                for (PhtatoListData listData : datas) {
                 }
                    // notifyDataSetChanged();
 
@@ -160,8 +169,9 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.example.dllo.tomatotodo.potatolist.activity.EditPotatolistActivity.class);
-                PhtatoListData data = datas.get(holder.getAdapterPosition());
-                Log.d("PhtatoListAdapter", "position:" + position);
+                PhtatoListData data = datas.get(holder.getLayoutPosition());
+                Log.d("PhtatoListAdapter", "position:" + holder.getLayoutPosition());
+                Log.d("PhtatoListAdapter", data.getContent());
                 DBTools.getInstance(context).queryCondition(PhtatoListData.class, "content", data.getContent());
                 intent.putExtra("content", data.getContent() + "");
                 context.startActivity(intent);
