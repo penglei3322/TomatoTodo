@@ -119,19 +119,20 @@
 
             <GridView
                 android:id="@+id/gridViewLastMonth"
-                android:numColumns="6"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"/>
-            <ProgressBar
+                android:layout_height="230dp"
+                android:gravity="center"
+                android:numColumns="6" />
 
+            <ProgressBar
+                android:id="@+id/progressBarLastMonth"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:max="100"
-                android:progress="0" />
+                android:progress="10" />
 
             <View
                 android:layout_width="match_parent"
