@@ -3,18 +3,21 @@ package com.example.dllo.tomatotodo.history;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.diegocarloslima.fgelv.lib.FloatingGroupExpandableListView;
+import com.diegocarloslima.fgelv.lib.WrapperExpandableListAdapter;
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseFragment;
+import com.example.dllo.tomatotodo.db.DBTools;
+import com.example.dllo.tomatotodo.db.HistoryAllBean;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by dllo on 16/7/18.
@@ -22,15 +25,15 @@ import java.util.List;
 public class HistoryFragment extends BaseFragment implements View.OnClickListener {
 
     private HashMap<Integer, String> map;
-    private ListView historyList;
-    private HistoryAdapter historyAdapter;
     private TextView leftTv, centerTv, rightTv;
-    private View historyView;
     private String date;// 当时的日期,用作点击事件判断
     private int key;// map里日期的key
     private int temp = 0;// 记录点击的次数
-
-    private ArrayList<String> datas;
+    private FloatingGroupExpandableListView mExpandableListView;
+    private HistoryAdapter mHistoryAdapter;
+    //查询需要月份的arrayList
+    private ArrayList<HistoryAllBean> arrayListThisMonth;
+    private FrameLayout mFrameLayout;
 
     @Override
     public int createView() {
@@ -39,30 +42,67 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void initView(View view) {
-        historyList = (ListView) view.findViewById(R.id.history_list);
         leftTv = (TextView) view.findViewById(R.id.history_left_tv);
         centerTv = (TextView) view.findViewById(R.id.history_center_tv);
         rightTv = (TextView) view.findViewById(R.id.history_right_tv);
-        historyView = (View) view.findViewById(R.id.history_view);
-        historyAdapter = new HistoryAdapter(context);
-        datas = new ArrayList<>();
+        mExpandableListView = (FloatingGroupExpandableListView) view.findViewById(R.id.history_list_view);
+        mFrameLayout = (FrameLayout) view.findViewById(R.id.history_fl);
+        mHistoryAdapter = new HistoryAdapter(context);
     }
 
     @Override
     public void initData() {
 
-
         setText();
-
         leftTv.setOnClickListener(this);
         rightTv.setOnClickListener(this);
 
-        ArrayList<HistoryBean> datas = (ArrayList<HistoryBean>) buildLocalDatas();
-        historyAdapter.setHistoryBeen(datas);
-        historyList.setAdapter(historyAdapter);
+
+        arrayListThisMonth = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+        //获取当前年月
+        String dateThis = format.format(new Date());
+        ArrayList<HistoryAllBean> list = (ArrayList<HistoryAllBean>) DBTools.getInstance(context).queryAll(HistoryAllBean.class);
+
+
+        for (HistoryAllBean historyAllBean : list) {
+            if (dateThis.equals(format.format(historyAllBean.getStartTime()))) {
+                arrayListThisMonth.add(historyAllBean);
+            }
+        }
+
+        if (arrayListThisMonth.size() == 0) {
+            mExpandableListView.setVisibility(View.GONE);
+            mFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mExpandableListView.setVisibility(View.VISIBLE);
+            mFrameLayout.setVisibility(View.GONE);
+            mHistoryAdapter.setBeans(arrayListThisMonth);
+//        mHistoryAdapter.setBeans(DBTools.getInstance(context).queryCondition(HistoryAllBean.class, "startTime", ));
+            WrapperExpandableListAdapter wrapperExpandableListAdapter = new WrapperExpandableListAdapter(mHistoryAdapter);
+            mExpandableListView.setAdapter(wrapperExpandableListAdapter);
+            // 设置expandableListView
+            setExpandableListView();
+        }
+    }
+
+
+    private void setExpandableListView() {
+
+        int count = mExpandableListView.getCount();
+        for (int i = 0; i < count; i++) {
+            mExpandableListView.expandGroup(i);
+        }
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                return true;
+            }
+        });
     }
 
     private void setText() {
+
         map = new HashMap<>();
         map.put(1, "一月");
         map.put(2, "二月");
@@ -88,33 +128,8 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         centerTv.setText(map.get(key));
         leftTv.setText(map.get(key - 1));
         rightTv.setText(map.get(key + 1));
-
-
-//        historyView.setLayoutParams(new LayoutParams(centerTv.getWidth()));
-        // 设置试图最小宽度
-//        historyView.setMinimumWidth(centerTv.getWidth());
     }
 
-    private List<HistoryBean> buildLocalDatas() {
-
-        ArrayList<HistoryBean> historyBeen = new ArrayList<>();
-
-        Calendar c = Calendar.getInstance();
-        String[] months = new String[30];
-        StringBuilder dates = new StringBuilder();
-        for (int i = 0; i < 30; i++) {
-            months[i] = new SimpleDateFormat("MM").format(new Date(c.getTimeInMillis()));
-            c.add(Calendar.DAY_OF_MONTH, -1);
-        }
-
-        historyBeen.add(new HistoryBean("测试", "内容", "哈哈哈"));
-        historyBeen.add(new HistoryBean("测试", "内容", "哈哈哈", "1"));
-        historyBeen.add(new HistoryBean("测试", "内容", "哈哈哈",  "1"));
-        historyBeen.add(new HistoryBean("测试", "内容", "哈哈哈"));
-        historyBeen.add(new HistoryBean("测试", "内容", "哈哈哈", "1"));
-
-        return historyBeen;
-    }
 
     @Override
     public void onClick(View v) {
@@ -139,6 +154,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 leftTv.setText(map.get(key - 1));// BUG!!!!!!!!!!!!!!!!!!!!!!
                 temp++;// 每当点击一次左侧按钮,记录一次点击次数
 
+                ClickChangeList(temp);
                 break;
 
             case R.id.history_right_tv:
@@ -159,7 +175,42 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 rightTv.setText(map.get(key + 1));
                 temp--;
 
+                ClickChangeList(temp);
                 break;
         }
     }
+
+    private void ClickChangeList(int temp) {
+
+        arrayListThisMonth = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
+        //获取当前年月
+        String dateThis = format.format(new Date());
+        int left = Integer.valueOf(dateThis) - temp;
+        ArrayList<HistoryAllBean> list = (ArrayList<HistoryAllBean>) DBTools.getInstance(context).queryAll(HistoryAllBean.class);
+
+
+        for (HistoryAllBean historyAllBean : list) {
+            if (String.valueOf(left).equals(format.format(historyAllBean.getStartTime()))) {
+                arrayListThisMonth.add(historyAllBean);
+
+            }
+
+        }
+
+        if (arrayListThisMonth.size() == 0) {
+            mExpandableListView.setVisibility(View.GONE);
+            mFrameLayout.setVisibility(View.VISIBLE);
+        } else {
+            mExpandableListView.setVisibility(View.VISIBLE);
+            mFrameLayout.setVisibility(View.GONE);
+            mHistoryAdapter.setBeans(arrayListThisMonth);
+            WrapperExpandableListAdapter wrapperExpandableListAdapter = new WrapperExpandableListAdapter(mHistoryAdapter);
+            mExpandableListView.setAdapter(wrapperExpandableListAdapter);
+            // 设置expandableListView
+            setExpandableListView();
+        }
+    }
+
+
 }

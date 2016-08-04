@@ -4,13 +4,9 @@ import android.content.Context;
 
 import com.litesuits.orm.LiteOrm;
 import com.litesuits.orm.db.assit.QueryBuilder;
+import com.litesuits.orm.db.assit.WhereBuilder;
 
 import java.util.ArrayList;
-
-import com.litesuits.orm.db.assit.WhereBuilder;
-import com.litesuits.orm.db.model.ColumnsValue;
-import com.litesuits.orm.db.model.ConflictAlgorithm;
-
 import java.util.List;
 
 
@@ -81,7 +77,6 @@ public class DBTools {
     }
 
     //条件查询
-
     public <T> List<T> queryCondition(Class<T> tClass, String columnName, String condition) {
         List<T> list = new ArrayList();
         list = liteOrm.query(new QueryBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));

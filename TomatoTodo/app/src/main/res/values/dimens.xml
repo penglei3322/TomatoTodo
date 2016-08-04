@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="item_history_marginRight_Lift">15dp</dimen>
     <dimen name="item_history_margin">5dp</dimen>
+    <dimen name="item_history_item_layout">30dp</dimen>
     <dimen name="item_history_layout_height">40dp</dimen>
     <dimen name="item_history_text_size">20dp</dimen>
     <dimen name="item_history_time_text_size">15dp</dimen>
