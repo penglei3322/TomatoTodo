@@ -6,16 +6,16 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_margin="20dp"
-        android:layout_centerInParent="true"
-        android:background="#404040"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:background="#404040">
 
         <LinearLayout
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -25,6 +25,7 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:id="@+id/et_object_select"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -36,6 +37,7 @@
                     android:textColor="#e22727" />
 
                 <ImageView
+                    android:id="@+id/delete_object_select"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
@@ -169,8 +171,8 @@
                 <com.example.dllo.tomatotodo.custom.CustomTextView
                     android:id="@+id/tv_object_options_zero"
                     android:layout_width="120dp"
-                    android:gravity="center_horizontal"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:text="0"
                     android:textColor="#ffffff"
                     android:textSize="40sp" />
@@ -178,15 +180,15 @@
             </LinearLayout>
 
             <View
-                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
+                android:layout_marginTop="5dp"
                 android:background="#e2e2e2" />
 
             <LinearLayout
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
                 <com.example.dllo.tomatotodo.custom.CustomTextView
                     android:id="@+id/tv_object_options_sure"
