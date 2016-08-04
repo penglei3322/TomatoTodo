@@ -7,14 +7,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:orientation="horizontal">
 
         <com.example.dllo.tomatotodo.custom.ReturnView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:paddingTop="15dp" />
 
         <TextView
+            android:id="@+id/tv_options_return"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -23,13 +25,6 @@
             android:textColor="#282828"
             android:textSize="18sp" />
 
-        <com.example.dllo.tomatotodo.custom.CustomTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="设置"
-            android:textColor="#282828"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,16 +35,17 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/ll_object_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:textColor="#282828"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="每日目标" />
+                android:text="每日目标"
+                android:textColor="#282828" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,16 +61,17 @@
             android:background="#b6b6b6" />
 
         <LinearLayout
+            android:id="@+id/ll_object_week"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:textColor="#282828"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="每周目标" />
+                android:text="每周目标"
+                android:textColor="#282828" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -90,16 +87,17 @@
             android:background="#b6b6b6" />
 
         <LinearLayout
+            android:id="@+id/ll_object_month"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:textColor="#282828"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="每月目标" />
+                android:text="每月目标"
+                android:textColor="#282828" />
 
             <TextView
                 android:layout_width="wrap_content"

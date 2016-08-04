@@ -8,6 +8,8 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -41,36 +43,33 @@ import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
-    private TabLayout tabLayout;
-    private MainAdapter adapter;
-    private ArrayList<Fragment> fragments;
-    private ViewPager viewPager;
-    private TextView titleTimer;
-    private CheckBox startCb;
-    private ImageView acceptBtn;
-    private ServiceConnection serviceConnection;
+    private TabLayout mTabLayout;
+    private MainAdapter mAdapter;
+    private ArrayList<Fragment> mFragmentsList;
+    private ViewPager mViewPager;
+    private TextView mTitleTimer;
+    private CheckBox mStartCb;
+    private ImageView mAcceptBtn;
+    private ServiceConnection mServiceConnection;
     private TomatoService.MyBinder myBinder;
-    private RelativeLayout relativeLayout;
+    private RelativeLayout mRelativeLayout;
     private NotificationManager notificationManager;
     private boolean isShowing = false;
     int allHeight;
-
-
     private boolean isActive;
-
-
-    private ImageView popIv;
-    private PopupWindow popupWindow;
+    private ImageView mPopIv;
+    private PopupWindow mPopupWindow;
     private int pos = 0;
 
     public ViewPager getViewPager() {
-        return viewPager;
+        return mViewPager;
     }
 
     @Override
@@ -81,30 +80,27 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
     @Override
     public void initData() {
-        tabLayout = (TabLayout) findViewById(R.id.main_tablayout);
-        adapter = new MainAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        titleTimer = (TextView) findViewById(R.id.title_timer);
-        startCb = (CheckBox) findViewById(R.id.title_action_checkbox);
+        mTabLayout = (TabLayout) findViewById(R.id.main_tablayout);
+        mAdapter = new MainAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
+        mTitleTimer = (TextView) findViewById(R.id.title_timer);
+        mStartCb = (CheckBox) findViewById(R.id.title_action_checkbox);
+        mAcceptBtn = (ImageView) findViewById(R.id.title_action_accept);
+        mPopIv = (ImageView) findViewById(R.id.title_action_pop);
+        mFragmentsList = new ArrayList<>();
+        mFragmentsList.add(new PotatoListFragment());
+        mFragmentsList.add(new HistoryFragment());
+        mFragmentsList.add(new StatisticsFragment());
+        mAdapter.setFragments(mFragmentsList);
+        mViewPager.setAdapter(mAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
 
-        acceptBtn = (ImageView) findViewById(R.id.title_action_accept);
+        mTitleTimer.setOnClickListener(this);
 
-        popIv = (ImageView) findViewById(R.id.title_action_pop);
+        mPopIv.setOnClickListener(this);
 
-        fragments = new ArrayList<>();
-        fragments.add(new PotatoListFragment());
-        fragments.add(new HistoryFragment());
-        fragments.add(new StatisticsFragment());
-        adapter.setFragments(fragments);
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-        titleTimer.setOnClickListener(this);
-
-        popIv.setOnClickListener(this);
-
-        acceptBtn.setOnClickListener(this);
-        relativeLayout = (RelativeLayout) findViewById(R.id.rl_title);
+        mAcceptBtn.setOnClickListener(this);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.rl_title);
         getHeight();
         // 跳转到土豆详情列表
         findViewById(R.id.activity_intent_historylist).setOnClickListener(new View.OnClickListener() {
@@ -119,12 +115,12 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         // 绑定服务
         Intent serviceIntent = new Intent(this, TomatoService.class);
         startService(serviceIntent);
-        serviceConnection = new ServiceConnection() {
+        mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 myBinder = (TomatoService.MyBinder) service;
                 if (myBinder.isTick()) {
-                    startCb.setChecked(true);
+                    mStartCb.setChecked(true);
                 } else {
                     if (myBinder.isWorkFinish()) {
                         setTitleTimer(new CountDownEvent(-1));
@@ -137,16 +133,15 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
             }
         };
-        bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
+        bindService(serviceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        startCb.setOnCheckedChangeListener(this);
+        mStartCb.setOnCheckedChangeListener(this);
 
         SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
         int workTime = sharedPreferences.getInt("workTime", 25);
-        titleTimer.setText(workTime + ":00");
+        mTitleTimer.setText(workTime + ":00");
 
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -172,26 +167,26 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
             String time = simpleDateFormat.format(new Date(countDownEvent.getMillisUntilFinished()));
             if (myBinder.isRest()) {
-                titleTimer.setTextColor(Color.GREEN);
-                acceptBtn.setVisibility(View.GONE);
-                startCb.setVisibility(View.VISIBLE);
+                mTitleTimer.setTextColor(Color.GREEN);
+                mAcceptBtn.setVisibility(View.GONE);
+                mStartCb.setVisibility(View.VISIBLE);
             } else {
-                titleTimer.setTextColor(Color.BLACK);
+                mTitleTimer.setTextColor(Color.BLACK);
             }
-            titleTimer.setText(time);
-            startCb.setChecked(true);
+            mTitleTimer.setText(time);
+            mStartCb.setChecked(true);
         } else if (countDownEvent.getMillisUntilFinished() == -1) { // 工作结束
-            titleTimer.setText("番茄已完成");
-            acceptBtn.setVisibility(View.VISIBLE);
-            startCb.setVisibility(View.GONE);
+            mTitleTimer.setText("番茄已完成");
+            mAcceptBtn.setVisibility(View.VISIBLE);
+            mStartCb.setVisibility(View.GONE);
         }
         if (countDownEvent.getMillisUntilFinished() == 0) { // 休息结束
             SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
             int workTime = sharedPreferences.getInt("workTime", 25);
-            titleTimer.setText(workTime + ":00");
-            titleTimer.setTextColor(Color.BLACK);
+            mTitleTimer.setText(workTime + ":00");
+            mTitleTimer.setTextColor(Color.BLACK);
             isShowing = true;
-            startCb.setChecked(false);
+            mStartCb.setChecked(false);
             isShowing = false;
         }
     }
@@ -203,14 +198,14 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         if (isActive) {
             if (myBinder.isTick()) {
-                startCb.setChecked(true);
+                mStartCb.setChecked(true);
             } else {
                 SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
                 int workTime = sharedPreferences.getInt("workTime", 25);
-                titleTimer.setText(workTime + ":00");
-                titleTimer.setTextColor(Color.BLACK);
+                mTitleTimer.setText(workTime + ":00");
+                mTitleTimer.setTextColor(Color.BLACK);
                 isShowing = true;
-                startCb.setChecked(false);
+                mStartCb.setChecked(false);
                 isShowing = false;
             }
             if (myBinder.isWorkFinish()) {
@@ -224,7 +219,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(serviceConnection);
+        unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
         isActive = false;
     }
@@ -235,20 +230,20 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         if (isChecked) {
             if (!myBinder.isTick()) {
                 myBinder.startCountDown();
-                titleTimer.setTextColor(Color.BLACK);
+                mTitleTimer.setTextColor(Color.BLACK);
             }
         } else {
             if (!isShowing && !myBinder.isRest()) {
                 showDelAlert();
-                startCb.setChecked(true);
+                mStartCb.setChecked(true);
             } else { // 取消休息
                 myBinder.cancelCountDown();
                 SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
                 int workTime = sharedPreferences.getInt("workTime", 25);
-                titleTimer.setText(workTime + ":00");
-                titleTimer.setTextColor(Color.BLACK);
+                mTitleTimer.setText(workTime + ":00");
+                mTitleTimer.setTextColor(Color.BLACK);
                 isShowing = true;
-                startCb.setChecked(false);
+                mStartCb.setChecked(false);
                 isShowing = false;
             }
 
@@ -267,10 +262,10 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 myBinder.cancelCountDown();
                 SharedPreferences sharedPreferences = getSharedPreferences("titleTime", MODE_PRIVATE);
                 int workTime = sharedPreferences.getInt("workTime", 25);
-                titleTimer.setText(workTime + ":00");
-                titleTimer.setTextColor(Color.BLACK);
+                mTitleTimer.setText(workTime + ":00");
+                mTitleTimer.setTextColor(Color.BLACK);
                 isShowing = true;
-                startCb.setChecked(false);
+                mStartCb.setChecked(false);
                 isShowing = false;
             }
         });
@@ -299,6 +294,16 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 showPopupWindow();
 
                 break;
+
+            case R.id.pop_share:
+                Intent intentShare = new Intent("share");
+                sendBroadcast(intentShare);
+                File sdRoot = Environment.getExternalStorageDirectory();
+                Log.d("MainActivity", "sdRoot:" + sdRoot);
+                shareMsg("分享至","我是分享内容","我是分享",sdRoot.getPath()+"/test.PNG");
+
+                break;
+
         }
     }
 
@@ -308,7 +313,7 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         View view = LayoutInflater.from(this).inflate(R.layout.popup_window, null);
 
-        popupWindow = new PopupWindow(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupWindow = new PopupWindow(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         finishPopTv = (TextView) view.findViewById(R.id.pop_finish);
         recordPopTv = (TextView) view.findViewById(R.id.pop_record);
         interruptPopTv = (TextView) view.findViewById(R.id.pop_interrupt);
@@ -316,20 +321,20 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
         sharePopTv = (TextView) view.findViewById(R.id.pop_share);
         preferencesPopTv = (TextView) view.findViewById(R.id.pop_preferences);
         helpPopTv = (TextView) view.findViewById(R.id.pop_help);
-        popupWindow.setContentView(view);
+        mPopupWindow.setContentView(view);
 //        popupWindow.setBackgroundDrawable(new BitmapDrawable());
         ColorDrawable cd = new ColorDrawable(0x000000);
-        popupWindow.setBackgroundDrawable(cd);
+        mPopupWindow.setBackgroundDrawable(cd);
         //产生背景变暗效果
         WindowManager.LayoutParams lp=getWindow().getAttributes();
         lp.alpha = 0.4f;
         getWindow().setAttributes(lp);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setFocusable(true);
-        popupWindow.showAsDropDown(tabLayout, tabLayout.getWidth(), -tabLayout.getHeight());
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.showAsDropDown(mTabLayout, mTabLayout.getWidth(), -mTabLayout.getHeight());
 
         // //在dismiss中恢复透明度
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 WindowManager.LayoutParams lp=getWindow().getAttributes();
@@ -357,17 +362,21 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
                 startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
             }
         });
+
+        sharePopTv.setOnClickListener(this);
+
+
     }
 
     public int getHeight() {
         // 状态栏高度
 
-        ViewTreeObserver observer = tabLayout.getViewTreeObserver();
+        ViewTreeObserver observer = mTabLayout.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                int height = tabLayout.getMeasuredHeight();
-                int relHei = relativeLayout.getMeasuredHeight();
+                int height = mTabLayout.getMeasuredHeight();
+                int relHei = mRelativeLayout.getMeasuredHeight();
                 allHeight = height + relHei;
                 return true;
             }
@@ -376,4 +385,28 @@ public class MainActivity extends BaseActivity implements CompoundButton.OnCheck
 
         return allHeight;
     }
+     //安卓原生分享
+    public void shareMsg(String activityTitle, String msgTitle, String msgText,
+                         String imgPath) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        if (imgPath == null || imgPath.equals("")) {
+            intent.setType("text/plain"); // 纯文本
+            Log.d("MainActivity", "111:" + 111);
+        } else {
+            Log.d("MainActivity", "222:" + 222);
+            File f = new File(imgPath);
+            Log.d("MainActivity", "f:" + f);
+            if (f != null && f.exists() && f.isFile()) {
+                intent.setType("image/PNG");
+                Uri u = Uri.fromFile(f);
+                intent.putExtra(Intent.EXTRA_STREAM, u);
+            }
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(Intent.createChooser(intent, activityTitle));
+    }
+
+
 }

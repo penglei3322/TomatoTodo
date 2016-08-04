@@ -26,6 +26,8 @@
         android:id="@+id/fragment_potatolist_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
         android:layout_marginTop="10dp" />
 
 </LinearLayout>

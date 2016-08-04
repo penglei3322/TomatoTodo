@@ -55,9 +55,9 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
     private int month = 1;
     private int day, hour, minute, weeks;
     private MyReceiver myReceiver;
+    private PhtatoListData data;
 
 
-    ////////SNACKBAR
     @Override
     public int createView() {
         return R.layout.fragment_potatolist;
@@ -84,15 +84,11 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("editContent");
         context.registerReceiver(myReceiver, intentFilter);
-
-
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(adapter);
-
-
-        //DBTools.getInstance(context).upDataSingle(data);
-        adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
+        adapter.setDatas(DBTools.getInstance(context).queryChecked(PhtatoListData.class, "topCheck", true));
+        adapter.setDatas(DBTools.getInstance(context).queryChecked(PhtatoListData.class, "topCheck", false));
     }
 
 
@@ -175,16 +171,15 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
                         addLinearLayout.setVisibility(View.VISIBLE);
                         String number = editText.getText().toString();
                         if (number.length() != 0) {
-                            PhtatoListData data = new PhtatoListData();
+                            data = new PhtatoListData();
                             data.setContent(number);
                             // 添加系统时间
                             Calendar calendar = Calendar.getInstance();
-                            day = calendar.get(Calendar.DAY_OF_MONTH);
+                            day = calendar.get(Calendar.DAY_OF_WEEK);
                             month = calendar.get(Calendar.MONTH);
                             hour = calendar.get(Calendar.HOUR);
                             minute = calendar.get(Calendar.MINUTE);
                             weeks = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-
                             data.setWeeks(weeks);
                             Log.d("PotatoListFragment", "weeks:" + weeks);
                             data.setMonth(month);
@@ -196,7 +191,7 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
                             data.setTopCheck(false);
                             datas.add(data);
                             DBTools.getInstance(context).insertSingle(data);
-                            adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
+                            adapter.addData(data);
                         }
                     }
                 });
@@ -215,44 +210,13 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
     public void onClick(int position) {
 
     }
-//
-//    private String getWeekDay(Calendar c) {
-//        if (c == null) {
-//            return "星期一";
-//        }
-//
-//        if (Calendar.MONDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期一";
-//        }
-//        if (Calendar.TUESDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期二";
-//        }
-//        if (Calendar.WEDNESDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期三";
-//        }
-//        if (Calendar.THURSDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期四";
-//        }
-//        if (Calendar.FRIDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期五";
-//        }
-//        if (Calendar.SATURDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期六";
-//        }
-//        if (Calendar.SUNDAY == c.get(Calendar.DAY_OF_WEEK)) {
-//            return "星期日";
-//        }
-//
-//        return "星期一";
-//    }
-
 
 
     class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
-            Toast.makeText(context, "接收到广播", Toast.LENGTH_SHORT).show();
+            adapter.editData(DBTools.getInstance(context).queryAll(PhtatoListData.class));
+
         }
     }
 

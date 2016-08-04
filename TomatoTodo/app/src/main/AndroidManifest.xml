@@ -20,6 +20,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 允许读取手机状态 用于创建BmobInstallation -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--读取sd卡的权限   -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
         android:name=".base.MyApp"
@@ -48,7 +51,7 @@
         <activity android:name=".preferences.shieldingapplications.WarningActivity" />
         <activity android:name=".potatolist.activity.EditPotatolistActivity" />
         <activity android:name=".statistics.object.ObjectiveActivity" />
-
+        <activity android:name=".statistics.ObjectOptionsActivity"/>
         <service android:name=".preferences.shieldingapplications.CoreService" />
 
         <activity android:name=".preferences.lengthoftime.LengthOfTimeActivity" />

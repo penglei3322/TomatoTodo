@@ -25,28 +25,28 @@ import java.util.Date;
  */
 public class CustomClock extends View {
 
-    private int height;
-    private int width;
-    private Paint paintRect;
-    private Paint paintLine;
-    private Paint paintCircle;
-    private Paint paintArc;
-    private Paint paintText;
+    private int mHeight;
+    private int mWidth;
+    private Paint mPaintRect;
+    private Paint mPaintLine;
+    private Paint mPaintCircle;
+    private Paint mPaintArc;
+    private Paint mPaintText;
     private float sin15 = 0.25881904510252F;
     private float sin30 = 0.5F;
     private float sin45 = 0.70710678118655F;
     private float sin60 = 0.86602540378444F;
     private float sin75 = 0.96592582628907F;
     private float cos15 = 0.96592582628907F;
-    private ArrayList<HistoryAllBean> beanArrayList;
+    private ArrayList<HistoryAllBean> mBeanArrayList;
+
 
     public CustomClock(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     public void setBeanArrayList(ArrayList<HistoryAllBean> beanArrayList) {
-        this.beanArrayList = beanArrayList;
-        Log.d("CustomClock", "beanArrayList.size():" + beanArrayList.size());
+        this.mBeanArrayList = beanArrayList;
         invalidate();
     }
 
@@ -58,125 +58,120 @@ public class CustomClock extends View {
         manager.getDefaultDisplay().getMetrics(outMetrics);
         int widthScreen = outMetrics.widthPixels;
         int heightScreen = outMetrics.heightPixels;
-        height = heightScreen / 3;
-        width = widthScreen;
-        setMeasuredDimension(width, height);
+        mHeight = heightScreen / 3;
+        mWidth = widthScreen;
+        setMeasuredDimension(mWidth, mHeight);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         //外点画笔
-        paintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintLine.setAntiAlias(true);
+        mPaintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintLine.setAntiAlias(true);
         //背景白色方形画笔
-        paintRect = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintRect = new Paint(Paint.ANTI_ALIAS_FLAG);
         //内层圆形画笔
-        paintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         //百分比扇形画笔
-        paintArc = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintArc = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintRect.setColor(Color.WHITE);
-        canvas.drawRect(0, 0, height, height, paintRect);
-        paintLine.setColor(Color.BLACK);
-        paintLine.setStrokeWidth(3);
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3, height / 2 - height / 3 - 10, paintLine);
+        mPaintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintRect.setColor(Color.WHITE);
+        canvas.drawRect(0, 0, mHeight, mHeight, mPaintRect);
+        mPaintLine.setColor(Color.BLACK);
+        mPaintLine.setStrokeWidth(3);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3, mHeight / 2 - mHeight / 3 - 10, mPaintLine);
         //15度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin15, height / 2 - (height / 3 + 10) * sin75, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin15, mHeight / 2 - (mHeight / 3 + 10) * sin75, mPaintLine);
         //30度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin30, height / 2 - (height / 3 + 10) * sin60, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin30, mHeight / 2 - (mHeight / 3 + 10) * sin60, mPaintLine);
         //45度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin45, height / 2 - (height / 3 + 10) * sin45, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin45, mHeight / 2 - (mHeight / 3 + 10) * sin45, mPaintLine);
         //60度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin60, height / 2 - (height / 3 + 10) * sin30, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin60, mHeight / 2 - (mHeight / 3 + 10) * sin30, mPaintLine);
         //75度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin75, height / 2 - (height / 3 + 10) * sin15, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin75, mHeight / 2 - (mHeight / 3 + 10) * sin15, mPaintLine);
         //90度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10), height / 2, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10), mHeight / 2, mPaintLine);
         //105度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin15, height / 2 + (height / 3 + 10) * cos15, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin15, mHeight / 2 + (mHeight / 3 + 10) * cos15, mPaintLine);
         //120度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin30, height / 2 + (height / 3 + 10) * sin60, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin30, mHeight / 2 + (mHeight / 3 + 10) * sin60, mPaintLine);
         //135度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin45, height / 2 + (height / 3 + 10) * sin45, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin45, mHeight / 2 + (mHeight / 3 + 10) * sin45, mPaintLine);
         //150度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin60, height / 2 + (height / 3 + 10) * sin30, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin60, mHeight / 2 + (mHeight / 3 + 10) * sin30, mPaintLine);
         //165度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 + (height / 3 + 10) * sin75, height / 2 + (height / 3 + 10) * sin15, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 + (mHeight / 3 + 10) * sin75, mHeight / 2 + (mHeight / 3 + 10) * sin15, mPaintLine);
         //180度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3, height / 2 + height / 3 + 10, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3, mHeight / 2 + mHeight / 3 + 10, mPaintLine);
         //195度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin15, height / 2 + (height / 3 + 10) * sin75, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin15, mHeight / 2 + (mHeight / 3 + 10) * sin75, mPaintLine);
         //210度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin30, height / 2 + (height / 3 + 10) * sin60, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin30, mHeight / 2 + (mHeight / 3 + 10) * sin60, mPaintLine);
         //225度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin45, height / 2 + (height / 3 + 10) * sin45, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin45, mHeight / 2 + (mHeight / 3 + 10) * sin45, mPaintLine);
         //240度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin60, height / 2 + (height / 3 + 10) * sin30, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin60, mHeight / 2 + (mHeight / 3 + 10) * sin30, mPaintLine);
         //255度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin75, height / 2 + (height / 3 + 10) * sin15, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin75, mHeight / 2 + (mHeight / 3 + 10) * sin15, mPaintLine);
         //270度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10), height / 2, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10), mHeight / 2, mPaintLine);
         //285度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin15, height / 2 - (height / 3 + 10) * sin75, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin15, mHeight / 2 - (mHeight / 3 + 10) * sin75, mPaintLine);
         //300度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin30, height / 2 - (height / 3 + 10) * sin60, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin30, mHeight / 2 - (mHeight / 3 + 10) * sin60, mPaintLine);
         //315度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin45, height / 2 - (height / 3 + 10) * sin45, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin45, mHeight / 2 - (mHeight / 3 + 10) * sin45, mPaintLine);
         //330度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin60, height / 2 - (height / 3 + 10) * sin30, paintLine);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin60, mHeight / 2 - (mHeight / 3 + 10) * sin30, mPaintLine);
         //345度
-        canvas.drawLine(width / 4 * 3, height / 2, width / 4 * 3 - (height / 3 + 10) * sin75, height / 2 - (height / 3 + 10) * sin15, paintLine);
-        paintCircle.setColor(Color.WHITE);
-        canvas.drawCircle(width / 4 * 3, height / 2, height / 3 + 2, paintCircle);
-        paintCircle.setColor(Color.BLACK);
-        canvas.drawCircle(width / 4 * 3, height / 2, height / 3 - 4, paintCircle);
-        paintCircle.setColor(Color.WHITE);
-        canvas.drawCircle(width / 4 * 3, height / 2, height / 3 - 6, paintCircle);
+        canvas.drawLine(mWidth / 4 * 3, mHeight / 2, mWidth / 4 * 3 - (mHeight / 3 + 10) * sin75, mHeight / 2 - (mHeight / 3 + 10) * sin15, mPaintLine);
+        mPaintCircle.setColor(Color.WHITE);
+        canvas.drawCircle(mWidth / 4 * 3, mHeight / 2, mHeight / 3 + 2, mPaintCircle);
+        mPaintCircle.setColor(Color.BLACK);
+        canvas.drawCircle(mWidth / 4 * 3, mHeight / 2, mHeight / 3 - 4, mPaintCircle);
+        mPaintCircle.setColor(Color.WHITE);
+        canvas.drawCircle(mWidth / 4 * 3, mHeight / 2, mHeight / 3 - 6, mPaintCircle);
 
-        paintText.setColor(Color.BLACK);
-        paintText.setTextSize(40);
+        mPaintText.setColor(Color.BLACK);
+        mPaintText.setTextSize(40);
 
         //24时
-        canvas.drawText("24", width / 4 * 3 - 20, height / 8, paintText);
+        canvas.drawText("24", mWidth / 4 * 3 - 20, mHeight / 8, mPaintText);
 
         //6时
-        canvas.drawText("6", width / 4 * 3 + height / 3 + 20, height / 2 + 10, paintText);
+        canvas.drawText("6", mWidth / 4 * 3 + mHeight / 3 + 20, mHeight / 2 + 10, mPaintText);
 
         //12时
-        canvas.drawText("12", width / 4 * 3 - 20, height / 15 * 14, paintText);
+        canvas.drawText("12", mWidth / 4 * 3 - 20, mHeight / 15 * 14, mPaintText);
 
         //18时
-        canvas.drawText("18", width / 4 * 3 - height / 3 - 60, height / 2 + 10, paintText);
+        canvas.drawText("18", mWidth / 4 * 3 - mHeight / 3 - 60, mHeight / 2 + 10, mPaintText);
 
-        paintText.setTextSize(50);
-        canvas.drawText("最佳工作时段", width / 20, height / 5, paintText);
+        mPaintText.setTextSize(50);
+        canvas.drawText("最佳工作时段", mWidth / 20, mHeight / 5, mPaintText);
 
         // 画红色区域
-        paintArc.setColor(Color.RED);
-        paintArc.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
-        paintArc.setColor(Color.parseColor("#40ff2a2a"));
-        RectF rectF = new RectF((width / 4 * 3 - height / 3) + 6, (height / 2 - height / 3) + 6, (width / 4 * 3 + height / 3) - 6, (height / 2 + height / 3) - 6);
+        mPaintArc.setColor(Color.RED);
+        mPaintArc.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
+        mPaintArc.setColor(Color.parseColor("#40ff2a2a"));
+        RectF rectF = new RectF((mWidth / 4 * 3 - mHeight / 3) + 6, (mHeight / 2 - mHeight / 3) + 6, (mWidth / 4 * 3 + mHeight / 3) - 6, (mHeight / 2 + mHeight / 3) - 6);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
 
-        for (HistoryAllBean historyAllBean : beanArrayList) {
+        for (HistoryAllBean historyAllBean : mBeanArrayList) {
             String startTime = simpleDateFormat.format(new Date(historyAllBean.getStartTime()));
-            Log.d("CustomClock111", startTime);
-
             //将开始的小时里的分钟转换成小时形式
             float hours = Integer.valueOf(startTime.substring(0, 2)) + Integer.valueOf(startTime.substring(2)) / 60f;
-            Log.d("CustomClock222", "hours:" + hours);
             //弧形开始角度
             float startAngle = (hours - 6) * 360 / 24;
             //持续的工作时间
-
             float duringHours = (historyAllBean.getEndTime() - historyAllBean.getStartTime()) / (1000 * 60 * 60f);
-            Log.d("CustomClock333", "duringHours:" + duringHours);
             //扇形扫过的角度
             float sweepAngle = duringHours / 24 * 360;
-            canvas.drawArc(rectF, startAngle, sweepAngle, true, paintArc);
+            canvas.drawArc(rectF, startAngle, sweepAngle, true, mPaintArc);
         }
 
 

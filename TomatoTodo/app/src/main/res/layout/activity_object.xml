@@ -2,7 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#cacaca">
+
+        <TextView
+            android:id="@+id/tv_object_return"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="10dp"
+            android:text="后退"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_object_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="10dp"
+            android:text="设置"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -119,19 +148,42 @@
 
             <GridView
                 android:id="@+id/gridViewLastMonth"
-                android:numColumns="6"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"/>
-            <ProgressBar
 
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_height="230dp"
+                android:gravity="center"
+                android:numColumns="6" />
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:max="100"
-                android:progress="0" />
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="今日" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarLastMonth"
+                    style="@style/MyProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="10dp"
+                    android:layout_weight="8"
+                    android:max="100"
+                    android:progress="20" />
+
+                <TextView
+                    android:id="@+id/curDayProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="0/8" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -242,20 +294,42 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerTwelveWeek"
+            <GridView
+                android:id="@+id/gridViewLastTwelveWeek"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:numColumns="6" />
 
-            <ProgressBar
-
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:max="100"
-                android:progress="0" />
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="本周" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarLastTwelveWeek"
+                    style="@style/MyProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="10dp"
+                    android:layout_weight="8"
+                    android:max="100"
+                    android:progress="20" />
+
+                <TextView
+                    android:id="@+id/curWeekProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="0/40" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -331,7 +405,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="日平均数" />
+                        android:text="平均" />
 
                 </LinearLayout>
 
@@ -365,19 +439,42 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerTwelveMonth"
+            <GridView
+                android:id="@+id/gridViewTwelveMonth"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:numColumns="6" />
 
-            <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:max="100"
-                android:progress="0" />
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="本月" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarLastTwelveMonth"
+                    style="@style/MyProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="10dp"
+                    android:layout_weight="8"
+                    android:max="100"
+                    android:progress="20" />
+
+                <TextView
+                    android:id="@+id/curMonthProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:text="0/160" />
+            </LinearLayout>
 
 
         </LinearLayout>

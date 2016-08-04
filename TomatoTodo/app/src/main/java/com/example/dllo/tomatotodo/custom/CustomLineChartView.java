@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import com.example.dllo.tomatotodo.base.MyApp;
 import com.example.dllo.tomatotodo.db.HistoryAllBean;
+import com.example.dllo.tomatotodo.statistics.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,45 +26,38 @@ import java.util.HashMap;
  * 自定义折线图
  */
 public class CustomLineChartView extends View {
-
-    private int height;
-    private int width;
-    private ArrayList<Integer> yAxis = new ArrayList<>();
-    private String dateEvery;
-    private Date dateThis;//传入月份转型为Date
-
-    private HashMap<String, Integer> data;
-    private int num = 1;
-    private int maxNum = 0;
-    private int mouth;
-    private int lineNum = 0;
-    private int everyDayNum;
+    private int mHeight;
+    private int mWidth;
+    private ArrayList<Integer> mYAxis = new ArrayList<>();
+    private String mDateEvery;
+    private Date mDateThis;//传入月份转型为Date
+    private HashMap<String, Integer> mHashData;
+    private int mNum = 1;
+    private int mMaxNum = 0;
+    private int mMouth;
+    private int mLineNum = 0;
+    private int mEveryDayNum;
     private ArrayList<HistoryAllBean> mouthAgoList = new ArrayList();
-
+    private int mTemp;
     //判断年月
-    private String thisYearMonth;
+    private String mThisYearMonth;
     // 网格宽高
-    private int gridWidth;
-    private int gridHeight;
+    private int mGridWidth;
+    private int mGridHeight;
     //存放着每年的每月有几天
-    private int[] mouthDay = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 30};
-    // 底部高度
-    private int bottomHeight;
-
+    private int[] mMouthDayNum = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 30};
     // 白色背景画笔
-    private Paint paintBg;
+    private Paint mPaintBg;
     // 灰色网格画笔
-    private Paint paintGridLine;
+    private Paint mPaintGridLine;
     // 文本数据画笔
-    private Paint paintText;
-
+    private Paint mPaintText;
     // 折线圆点背景
-    private Paint paintPointBg;
+    private Paint mPaintPointBg;
     // 折线圆点红色表面画笔
-    private Paint paintPointCircle;
-
+    private Paint mPaintPointCircle;
     // 折线的画笔
-    private Paint paintLine;
+    private Paint mPaintLine;
 
 
     public CustomLineChartView(Context context, AttributeSet attrs) {
@@ -72,49 +66,41 @@ public class CustomLineChartView extends View {
 
 
     public void init() {
-        data = new HashMap<>();
-        paintBg = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintBg.setColor(Color.CYAN);
+        mHashData = new HashMap<>();
+        mPaintBg = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintBg.setColor(Color.CYAN);
+        mPaintGridLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintGridLine.setColor(Color.GRAY);
+        mPaintGridLine.setTextAlign(Paint.Align.CENTER);
+        mPaintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintText.setColor(Color.BLACK);
+        mPaintText.setTextSize(35);
+        mPaintText.setTextAlign(Paint.Align.CENTER);
+        mPaintPointBg = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintPointBg.setColor(Color.WHITE);
+        mPaintPointCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintPointCircle.setColor(Color.RED);
+        mPaintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintLine.setColor(Color.RED);
+        mPaintLine.setStrokeWidth(5);
 
-        paintGridLine = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintGridLine.setColor(Color.GRAY);
-        paintGridLine.setTextAlign(Paint.Align.CENTER);
-
-        paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintText.setColor(Color.BLACK);
-        paintText.setTextSize(35);
-        paintText.setTextAlign(Paint.Align.CENTER);
-
-
-        paintPointBg = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintPointBg.setColor(Color.WHITE);
-
-        paintPointCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintPointCircle.setColor(Color.RED);
-
-        paintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintLine.setColor(Color.RED);
-        paintLine.setStrokeWidth(5);
-        num = 1;
+        mNum = 1;
         for (int i = 0; i < mouthAgoList.size() - 1; i++) {
             SimpleDateFormat formatStart = new SimpleDateFormat("MM-dd");
             String startData = formatStart.format(mouthAgoList.get(i).getStartTime());
             if (startData.equals(formatStart.format(mouthAgoList.get(i + 1).getStartTime()))) {
-                num++;
-                data.put(startData, num);
-                if (num > maxNum) {
-                    maxNum = num;
-                    Log.d("CustomLineChartView", "maxNum:" + maxNum);
+                mNum++;
+                mHashData.put(startData, mNum);
+                if (mNum > mMaxNum) {
+                    mMaxNum = mNum;
                 }
             } else {
-                num = 1;
+                mNum = 1;
             }
-
-
         }
 
-        if (maxNum < 4) {
-            maxNum = 4;
+        if (mMaxNum < 4) {
+            mMaxNum = 4;
         }
 
         WindowManager manager = (WindowManager) MyApp.context.getSystemService(Context.WINDOW_SERVICE);
@@ -122,30 +108,28 @@ public class CustomLineChartView extends View {
         manager.getDefaultDisplay().getMetrics(outMetrics);
         int widthScreen = outMetrics.widthPixels;
         int heightScreen = outMetrics.heightPixels;
-        gridHeight = (height - 120) / maxNum;
-        gridWidth = widthScreen / 7;
-        bottomHeight = 20;
+        mGridHeight = (mHeight - 120) / mMaxNum;
+        mGridWidth = widthScreen / 7;
 
     }
 
-    public void setMouthAgoList(ArrayList mouthAgoList, String mouth) {
-
-        thisYearMonth = mouth;
+    public void setMouthAgoList(ArrayList mouthAgoList, String mouth,int temp) {
+        //初始化折线图最大值,保证Y轴横线数量
+        mMaxNum= 0;
+        mThisYearMonth = mouth;
+        this.mTemp = temp;
         this.mouthAgoList = mouthAgoList;
         if (mouth.equals("13")) {
-            this.mouth = 13;
-            lineNum = 30;
+            this.mMouth = 13;
+            mLineNum = 30;
         } else {
-            this.mouth = Integer.valueOf(mouth.substring(4));
-            if (this.mouth == 0) {
-                this.mouth = 12;
+            this.mMouth = Integer.valueOf(mouth.substring(4));
+            if (this.mMouth == 0) {
+                this.mMouth = 12;
             }
-
-            getDaysByYearMonth(Integer.valueOf(mouth.substring(0,4)),Integer.valueOf(mouth.substring(5)));
-
-
+            //截取年份和月份获取月份天数
+            mLineNum = getDaysByYearMonth(Integer.valueOf(mouth.substring(0, 4)), Integer.valueOf(mouth.substring(4)));
         }
-
         invalidate();
 
     }
@@ -155,102 +139,68 @@ public class CustomLineChartView extends View {
         init();
         super.onDraw(canvas);
         //当每次重新绘制的时候清空存放
-        yAxis.clear();
+        mYAxis.clear();
         canvas.drawColor(Color.WHITE);
         // 画横线
-        for (int i = 0; i < maxNum + 1; i++) {
-            canvas.drawLine(0, height - gridHeight * i - 80, width, height - gridHeight * i - 80, paintGridLine);
+        for (int i = 0; i < mMaxNum + 1; i++) {
+            canvas.drawLine(0, mHeight - mGridHeight * i - 80, mWidth, mHeight - mGridHeight * i - 80, mPaintGridLine);
         }
 
-
         Date date = new Date();
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
         try {
-             dateThis = simpleDateFormat.parse(thisYearMonth);
+            mDateThis = simpleDateFormat.parse(mThisYearMonth);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-
-
         //判断传进来的数据是否是最近30天
-
-        if (mouth ==13){
-            lineNum = mouthDay[mouth - 1];
+        if (mMouth == 13) {
+            mLineNum = mMouthDayNum[mMouth - 1];
         } else {
             //传入方法返回月份所有日期绘制x坐标
-            dayReport(canvas,dateThis);
+            dayReport(canvas, mDateThis);
         }
 
         //画竖线
-        for (int i = 0; i < lineNum; i++) {
-            canvas.drawLine(gridWidth / 2 + gridWidth * i, 0, gridWidth / 2 + gridWidth * i, height - 80, paintGridLine);
+        for (int i = 0; i < mLineNum; i++) {
+            canvas.drawLine(mGridWidth / 2 + mGridWidth * i, 0, mGridWidth / 2 + mGridWidth * i, mHeight - 80, mPaintGridLine);
 
             SimpleDateFormat format = new SimpleDateFormat("MM/dd");
-            if (mouth == 13) {
-                dateEvery = format.format(getNextDayThirtyDay(date, lineNum - i));
+            if (mMouth == 13) {
+                mDateEvery = format.format(DateUtils.getNextDayThirtyDay(date, mLineNum - i));
             } else {
-                Date dateLast =  getLastMonthDay(date, 1);
-                dateEvery = format.format(getNextDay(dateLast, -(lineNum + i-1)));
+                //根据点击次数返回对应月份的所有天数
+                Date dateLast = DateUtils.getLastMonthDay(date, mTemp);
+                //转型为月份与日期
+                mDateEvery = format.format(DateUtils.getNextDay(dateLast, -(mLineNum + i)));
             }
 
-            if (mouth == 13){
-                canvas.drawText(dateEvery, gridWidth / 2 + gridWidth * i, height - 30, paintText);
+            if (mMouth == 13) {
+                canvas.drawText(mDateEvery, mGridWidth / 2 + mGridWidth * i, mHeight - 30, mPaintText);
             }
-
             //存放每个坐标点的值
             for (HistoryAllBean historyAllBean : mouthAgoList) {
-                if (format.format(historyAllBean.getStartTime()).equals(dateEvery)) {
-                    everyDayNum++;
-
+                if (format.format(historyAllBean.getStartTime()).equals(mDateEvery)) {
+                    mEveryDayNum++;
                 }
             }
-            yAxis.add(everyDayNum);
-            everyDayNum = 0;
+
+            mYAxis.add(mEveryDayNum);
+            mEveryDayNum = 0;
 
         }
         //折线
-
-        for (int i = 0; i < lineNum - 1; i++) {
-            canvas.drawLine(gridWidth / 2 + gridWidth * i, height - 80 - gridHeight * yAxis.get(i),
-                    gridWidth / 2 + gridWidth * (i + 1), height - 80 - gridHeight * yAxis.get(i + 1), paintLine);
+        for (int i = 0; i < mLineNum - 1; i++) {
+            canvas.drawLine(mGridWidth / 2 + mGridWidth * i, mHeight - 80 - mGridHeight * mYAxis.get(i),
+                    mGridWidth / 2 + mGridWidth * (i + 1), mHeight - 80 - mGridHeight * mYAxis.get(i + 1), mPaintLine);
 
         }
         //圆点
-        for (int i = 0; i < lineNum; i++) {
-            canvas.drawCircle(gridWidth/ 2 + gridWidth * i, height - 80 - gridHeight * yAxis.get(i), 20, paintPointCircle);
-            canvas.drawCircle(gridWidth / 2 + gridWidth * i, height - 80 - gridHeight * yAxis.get(i), 15, paintPointBg);
-
+        for (int i = 0; i < mLineNum; i++) {
+            canvas.drawCircle(mGridWidth / 2 + mGridWidth * i, mHeight - 80 - mGridHeight * mYAxis.get(i), 20, mPaintPointCircle);
+            canvas.drawCircle(mGridWidth / 2 + mGridWidth * i, mHeight - 80 - mGridHeight * mYAxis.get(i), 15, mPaintPointBg);
         }
-
-    }
-
-    public static Date getLastMonthDay(Date date,int i) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -i);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        date = calendar.getTime();
-        return date;
-
-
-    }
-
-
-    public Date getNextDayThirtyDay(Date date, int i) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH, -i + 1);
-        date = calendar.getTime();
-        return date;
-    }
-
-    public Date getNextDay(Date date, int i) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH, -i);
-        date = calendar.getTime();
-        return date;
     }
 
 
@@ -262,32 +212,29 @@ public class CustomLineChartView extends View {
         manager.getDefaultDisplay().getMetrics(outMetrics);
         int widthScreen = outMetrics.widthPixels;
         int heightScreen = outMetrics.heightPixels;
-        height = heightScreen / 3;
-        gridWidth = widthScreen / 7;
-        width = gridWidth * 31;
-        bottomHeight = 20;
-        setMeasuredDimension(width, height);
+        mHeight = heightScreen / 3;
+        mGridWidth = widthScreen / 7;
+        mWidth = mGridWidth * 31;
+        setMeasuredDimension(mWidth, mHeight);
     }
 
     //获取指定月份的天数
-    public  int getDaysByYearMonth(int year, int month) {
+    public int getDaysByYearMonth(int year, int month) {
         Calendar a = Calendar.getInstance();
         a.set(Calendar.YEAR, year);
-        a.set(Calendar.MONTH, month);
+        a.set(Calendar.MONTH, month - 1);
         a.set(Calendar.DATE, 1);
         a.roll(Calendar.DATE, -1);
         int maxDate = a.get(Calendar.DATE);
-        lineNum = maxDate;
-        Log.d("CustomLineChartView", "lineNum:" + lineNum);
         return maxDate;
     }
 
     //根据month获取当前日期月份的总天数绘制出x坐标
-    public void dayReport(Canvas canvas,Date month) {
+    public void dayReport(Canvas canvas, Date month) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(month);//month 为指定月份任意日期
         int year = cal.get(Calendar.YEAR);
-        int m = cal.get(Calendar.MONTH);
+        int m = cal.get(Calendar.MONTH) + 1;
         int dayNumOfMonth = getDaysByYearMonth(year, m);
         cal.set(Calendar.DAY_OF_MONTH, 1);// 从一号开始
 
@@ -295,7 +242,7 @@ public class CustomLineChartView extends View {
             Date d = cal.getTime();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
             String df = simpleDateFormat.format(d);
-            canvas.drawText(df,gridWidth / 2 + gridWidth * i, height - 30, paintText);
+            canvas.drawText(df, mGridWidth / 2 + mGridWidth * i, mHeight - 30, mPaintText);
         }
     }
 
