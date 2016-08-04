@@ -49,6 +49,8 @@ public class EditPotatolistActivity extends BaseActivity {
                 DBTools.getInstance(EditPotatolistActivity.this).upData(content, editContent);
                 Intent saveIntent = new Intent(EditPotatolistActivity.this, MainActivity.class);
                 Intent sendIntent = new Intent("editContent");
+                sendIntent.putExtra("edit",editContent);
+                sendIntent.putExtra("cc",content);
                 sendBroadcast(sendIntent);
                 startActivity(saveIntent);
             }

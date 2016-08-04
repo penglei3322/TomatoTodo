@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by dllo on 16/7/20.
  */
 
-public class PhtatoListData {
+public class PhtatoListData implements Comparable<PhtatoListData> {
     @PrimaryKey(AssignType.AUTO_INCREMENT)
     private int id;
 
@@ -115,5 +115,28 @@ public class PhtatoListData {
 
     public void setDescribe(String describe) {
         this.describe = describe;
+    }
+
+    /**
+     * Compares this object to the specified object to determine their relative
+     * order.
+     *
+     * @param another the object to compare to this instance.
+     * @return a negative integer if this instance is less than {@code another};
+     * a positive integer if this instance is greater than
+     * {@code another}; 0 if this instance has the same order as
+     * {@code another}.
+     * @throws ClassCastException if {@code another} cannot be converted into something
+     *                            comparable to {@code this} instance.
+     */
+    @Override
+    public int compareTo(PhtatoListData another) {
+        if(another.isTopCheck() == isTopCheck()){
+            return 0;
+        }
+        if(another.isTopCheck()){
+            return 1;
+        }
+        return -1;
     }
 }

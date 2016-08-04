@@ -55,6 +55,7 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
     private int month = 1;
     private int day, hour, minute, weeks;
     private MyReceiver myReceiver;
+    private PhtatoListData data;
 
 
     @Override
@@ -88,10 +89,6 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
         mRecyclerView.setAdapter(adapter);
         adapter.setDatas(DBTools.getInstance(context).queryChecked(PhtatoListData.class, "topCheck", true));
         adapter.setDatas(DBTools.getInstance(context).queryChecked(PhtatoListData.class, "topCheck", false));
-       // adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
-
-
-       // adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
     }
 
 
@@ -174,7 +171,7 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
                         addLinearLayout.setVisibility(View.VISIBLE);
                         String number = editText.getText().toString();
                         if (number.length() != 0) {
-                            PhtatoListData data = new PhtatoListData();
+                            data = new PhtatoListData();
                             data.setContent(number);
                             // 添加系统时间
                             Calendar calendar = Calendar.getInstance();
@@ -194,7 +191,8 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
                             data.setTopCheck(false);
                             datas.add(data);
                             DBTools.getInstance(context).insertSingle(data);
-                            adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
+                            adapter.addData(data);
+                            //   adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
                         }
                     }
                 });
@@ -224,9 +222,10 @@ public class PotatoListFragment extends BaseFragment implements PhtatolistListen
     class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //   adapter.setDatas(DBTools.getInstance(context).queryChecked(PhtatoListData.class,"topCheck",true));
-            adapter.setDatas(DBTools.getInstance(context).queryAll(PhtatoListData.class));
+            adapter.editData(DBTools.getInstance(context).queryAll(PhtatoListData.class));
 
+            //adapter.editData(DBTools.getInstance(context).queryChecked(PhtatoListData.class, "topCheck", true));
+            //adapter.editData(DBTools.getInstance(context).queryChecked(PhtatoListData.class,"topCheck",false));
         }
     }
 

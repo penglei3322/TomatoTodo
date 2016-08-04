@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by dllo on 16/7/20.
  */
-public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.MyViewHolder> implements SlidingMenuView.SlidingListener{
+public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.MyViewHolder> implements SlidingMenuView.SlidingListener {
 
     private List<PhtatoListData> datas;
     private Context context;
@@ -46,11 +46,21 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     public PhtatoListAdapter(Context context) {
         this.context = context;
     }
-
     public void setDatas(List<PhtatoListData> datas) {
-        if (this.datas ==null)
-        this.datas = datas;
+        if (this.datas == null)
+            this.datas = datas;
         else this.datas.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+    public void addData(PhtatoListData data) {
+        this.datas.add(data);
+        notifyDataSetChanged();
+    }
+
+    public void editData(List<PhtatoListData> datas) {
+        this.datas = datas;
+        Collections.sort(this.datas);
         notifyDataSetChanged();
     }
 
@@ -116,10 +126,10 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
                     Collections.swap(datas, 0, pos);
                     notifyItemMoved(pos, 0);
                 }
+                   // notifyDataSetChanged();
 
 //TODO 更改数据库
                 DBTools.getInstance(context).upDataSingle(data);
-
 
 
             }
@@ -150,7 +160,8 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.example.dllo.tomatotodo.potatolist.activity.EditPotatolistActivity.class);
-                PhtatoListData data = datas.get(position);
+                PhtatoListData data = datas.get(holder.getAdapterPosition());
+                Log.d("PhtatoListAdapter", "position:" + position);
                 DBTools.getInstance(context).queryCondition(PhtatoListData.class, "content", data.getContent());
                 intent.putExtra("content", data.getContent() + "");
                 context.startActivity(intent);
@@ -176,8 +187,6 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     public void onMenuIsOpen(SlidingMenuView slidingMenuView) {
         this.slidingMenuView = slidingMenuView;
     }
-
-
 
 
     class MyViewHolder extends RecyclerView.ViewHolder {
