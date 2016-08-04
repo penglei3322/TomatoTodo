@@ -9,15 +9,12 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.diegocarloslima.fgelv.lib.FloatingGroupExpandableListView;
 import com.example.dllo.tomatotodo.R;
-import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
 import com.example.dllo.tomatotodo.potatolist.data.PotatolistChildData;
 import com.example.dllo.tomatotodo.potatolist.data.PotatolistGroupData;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +28,6 @@ public class PotatoHistoryAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<PhtatoListData> datas;
     private List<PotatolistGroupData> groupDatas;
-    // private List<PotatolistChildData> allDatas;
-
     private Map<PotatolistGroupData, List<PotatolistChildData>> all;
 
     public PotatoHistoryAdapter(Context context) {

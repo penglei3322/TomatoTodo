@@ -21,10 +21,28 @@ public class PhtatoListData {
     private boolean topCheck = false;
     private int month;
     private int day;
-    private int hour,minute,weeks;
+    private int hour, minute, weeks;
+    private int lastHour, lastMinute;
 
-    private long getData(){
-        Date date = new Date(2016,month,day,hour,minute);
+
+    public int getLastHour() {
+        return lastHour;
+    }
+
+    public void setLastHour(int lastHour) {
+        this.lastHour = lastHour;
+    }
+
+    public int getLastMinute() {
+        return lastMinute;
+    }
+
+    public void setLastMinute(int lastMinute) {
+        this.lastMinute = lastMinute;
+    }
+
+    private long getData() {
+        Date date = new Date(2016, month, day, hour, minute);
         return date.getTime();
     }
 
