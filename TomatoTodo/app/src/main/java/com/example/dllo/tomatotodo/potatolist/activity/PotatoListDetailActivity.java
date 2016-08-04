@@ -16,6 +16,7 @@ import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.main.MainActivity;
 import com.example.dllo.tomatotodo.potatolist.adapter.PotatoHistoryAdapter;
 import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
+import com.example.dllo.tomatotodo.potatolist.data.PotatolistChildData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +47,11 @@ public class PotatoListDetailActivity extends BaseActivity {
         });
         listView = (FloatingGroupExpandableListView) findViewById(R.id.activity_potatolist_details_listview);
         adapter = new PotatoHistoryAdapter(this);
-        adapter.setDatas(DBTools.getInstance(this).queryAll(PhtatoListData.class));
+        //DBTools.getInstance(this).queryCondition(PhtatoListData.class, "Checked",);
+        adapter.setDatas(DBTools.getInstance(this).queryChecked(PhtatoListData.class, "Checked", true));
         WrapperExpandableListAdapter wrapperExpandableListAdapter = new WrapperExpandableListAdapter(adapter);
         listView.setAdapter(wrapperExpandableListAdapter);
         setExpandableListView();//设置expandableListView
-
 
     }
 

@@ -10,19 +10,21 @@ import java.util.Date;
  * Created by dllo on 16/7/20.
  */
 
-public class PhtatoListData {
+public class PhtatoListData implements Comparable<PhtatoListData> {
     @PrimaryKey(AssignType.AUTO_INCREMENT)
     private int id;
 
     @NotNull
     private String content;
-    private String pos;
+    private int pos;
     private boolean Checked = false;
     private boolean topCheck = false;
     private int month;
     private int day;
-    private int hour, minute, weeks;
     private int lastHour, lastMinute;
+    private int hour,minute,weeks;
+    private String describe;
+
 
 
     public int getLastHour() {
@@ -98,11 +100,11 @@ public class PhtatoListData {
         this.id = id;
     }
 
-    public String getPos() {
+    public int getPos() {
         return pos;
     }
 
-    public void setPos(String pos) {
+    public void setPos(int pos) {
         this.pos = pos;
     }
 
@@ -124,5 +126,31 @@ public class PhtatoListData {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    @Override
+    public int compareTo(PhtatoListData another) {
+        if(another.isItemChecked() == isItemChecked()){
+            if(another.isTopCheck() == isTopCheck()){
+                return 0;
+            }
+            if(another.isTopCheck()){
+                return 1;
+            }
+            return -1;
+        }
+        if(another.isItemChecked()){
+            return -1;
+        }
+
+        return 1;
     }
 }

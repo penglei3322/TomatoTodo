@@ -16,6 +16,7 @@ import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.main.MainActivity;
 import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
 import com.litesuits.orm.db.model.ColumnsValue;
+import com.litesuits.orm.db.model.ConflictAlgorithm;
 
 /**
  * Created by dllo on 16/7/28.
@@ -37,18 +38,19 @@ public class EditPotatolistActivity extends BaseActivity {
         saveIv = (ImageView) findViewById(R.id.aty_edit_potatolist_ok);
         editText = (EditText) findViewById(R.id.aty_edit_potatolist_content_et);
         Intent intent = getIntent();
-        String content = intent.getStringExtra("content");
+        final String content = intent.getStringExtra("content");
         editText.setText(content);
-        String editContent = editText.getText().toString();
-        data.setContent(editContent);
-//        DBTools.getInstance(this).queryCondition(PhtatoListData.class, "content", data.getContent());
-//        DBTools.getInstance(EditPotatolistActivity.this).upDataCondition(editContent);
+
         saveIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String editContent = editText.getText().toString();
+                data.setContent(editContent);
+                DBTools.getInstance(EditPotatolistActivity.this).upData(content, editContent);
                 Intent saveIntent = new Intent(EditPotatolistActivity.this, MainActivity.class);
                 Intent sendIntent = new Intent("editContent");
+                sendIntent.putExtra("edit",editContent);
+                sendIntent.putExtra("cc",content);
                 sendBroadcast(sendIntent);
                 startActivity(saveIntent);
             }

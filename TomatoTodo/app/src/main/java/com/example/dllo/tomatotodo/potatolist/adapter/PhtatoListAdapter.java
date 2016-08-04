@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,13 +16,16 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.potatolist.data.PhtatoListData;
+import com.example.dllo.tomatotodo.potatolist.tools.PhtatolistListener;
 import com.example.dllo.tomatotodo.potatolist.tools.SlidingMenuView;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,9 +47,21 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     public PhtatoListAdapter(Context context) {
         this.context = context;
     }
-
     public void setDatas(List<PhtatoListData> datas) {
+        if (this.datas == null)
+            this.datas = datas;
+        else this.datas.addAll(datas);
+        notifyDataSetChanged();
+    }
+
+    public void addData(PhtatoListData data) {
+        this.datas.add(data);
+        notifyDataSetChanged();
+    }
+
+    public void editData(List<PhtatoListData> datas) {
         this.datas = datas;
+        Collections.sort(this.datas);
         notifyDataSetChanged();
     }
 
@@ -62,7 +78,7 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         holder.textView.setText(datas.get(position).getContent());
         final PhtatoListData data = datas.get(position);
         DBTools.getInstance(context).queryAll(PhtatoListData.class);
@@ -105,15 +121,25 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
                 CheckBox checkBox = (CheckBox) v;
                 data.setTopCheck(checkBox.isChecked());
                 if (!datas.get(pos).isTopCheck()) {
-                    Collections.swap(DBTools.getInstance(context).queryAll(PhtatoListData.class), pos, datas.size() - 1);
+                 //   Collections.(datas, pos, datas.size() - 1);
+                    PhtatoListData listData = datas.get(pos);
+                    datas.remove(listData);
+                    datas.add(listData);
                     notifyItemMoved(pos, datas.size() - 1);
                 } else {
-                    Collections.swap(datas, 0, pos);
+                    //Collections.swap(datas, 0, pos);
+                    PhtatoListData listData = datas.get(pos);
+                    datas.remove(listData);
+                    datas.add(0,listData);
                     notifyItemMoved(pos, 0);
                 }
+                for (PhtatoListData listData : datas) {
+                }
+                   // notifyDataSetChanged();
 
 //TODO 更改数据库
                 DBTools.getInstance(context).upDataSingle(data);
+
 
             }
         });
@@ -121,8 +147,18 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                                                    @Override
                                                    public void onClick(View v) {
-                                                       int pos = holder.getLayoutPosition();
-                                                       PhtatoListData data = datas.get(pos);
+                                                       final int pos = holder.getLayoutPosition();
+                                                       final PhtatoListData data = datas.get(pos);
+                                                       Snackbar.make(holder.linearLayout, "已删除" + data.getContent(), Snackbar.LENGTH_LONG).
+                                                               setAction("撤销删除", new View.OnClickListener() {
+                                                                   @Override
+                                                                   public void onClick(View v) {
+                                                                       Toast.makeText(context, "已撤销 ", Toast.LENGTH_SHORT).show();
+                                                                       datas.add(pos, data);
+                                                                       DBTools.getInstance(context).insertSingle(data);
+                                                                       notifyItemInserted(pos);
+                                                                   }
+                                                               }).setActionTextColor(Color.RED).show();
                                                        DBTools.getInstance(context).deleteCondition(PhtatoListData.class, "content", data.getContent());
                                                        datas.remove(pos);
                                                        notifyItemRemoved(pos);
@@ -133,7 +169,9 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.example.dllo.tomatotodo.potatolist.activity.EditPotatolistActivity.class);
-                PhtatoListData data = datas.get(position);
+                PhtatoListData data = datas.get(holder.getLayoutPosition());
+                Log.d("PhtatoListAdapter", "position:" + holder.getLayoutPosition());
+                Log.d("PhtatoListAdapter", data.getContent());
                 DBTools.getInstance(context).queryCondition(PhtatoListData.class, "content", data.getContent());
                 intent.putExtra("content", data.getContent() + "");
                 context.startActivity(intent);
@@ -160,6 +198,7 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
         this.slidingMenuView = slidingMenuView;
     }
 
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         CheckBox okCheck, topCheck;
@@ -179,3 +218,4 @@ public class PhtatoListAdapter extends RecyclerView.Adapter<PhtatoListAdapter.My
     }
 
 }
+
