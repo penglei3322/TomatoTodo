@@ -59,7 +59,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="340dp"
+                android:layout_marginLeft="300dp"
                 android:background="@drawable/potatolist_fragment_top"
                 android:button="@null"
                 android:focusable="false" />
