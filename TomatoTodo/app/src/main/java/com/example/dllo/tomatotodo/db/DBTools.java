@@ -73,7 +73,11 @@ public class DBTools {
 
     //条件删除
     public <T> void deleteCondition(Class<T> tClass, String columnName, String condition) {
-        liteOrm.delete(new WhereBuilder(tClass).where(columnName + " LIKE ? ", new String[]{condition}));
+        liteOrm.delete(new WhereBuilder(tClass).where(columnName + " LIKE ?", new String[]{condition}));
+    }
+
+    public <T> void delConditionByTime(Class<T> tClass, String columnName, Long condition){
+        liteOrm.delete(new WhereBuilder(tClass).where(columnName + " LIKE ?", new Long[]{condition}));
     }
 
     //查询指定表所有数据

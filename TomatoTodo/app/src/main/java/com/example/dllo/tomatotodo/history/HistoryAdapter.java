@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.db.HistoryAllBean;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,8 +70,8 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
 
             // 下面
             HistoryChildBean historyChildBean = new HistoryChildBean();
-            historyChildBean.setFirstTime(startHourAndMinute);
-            historyChildBean.setLastTime(endHourAndMinute);
+            historyChildBean.setFirstTime(startTime);
+            historyChildBean.setLastTime(endTime);
             historyChildBean.setName(name);
 
             childBeen.add(historyChildBean);
@@ -158,8 +160,8 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
             timeHolder = (TimeHolder) convertView.getTag();
         }
         timeHolder.historyName.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getName());
-        timeHolder.historyFirstTime.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getFirstTime());
-        timeHolder.historyLastTime.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getLastTime());
+        timeHolder.historyFirstTime.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getFirstTime().substring(11,16));
+        timeHolder.historyLastTime.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getLastTime().substring(11,16));
 
 
         final TimeHolder finalTimeHolder = timeHolder;
@@ -196,6 +198,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
     public boolean delete = true;
 
     public void deleteFromDb(final HistoryChildBean childBean) {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -205,7 +208,14 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
                     e.printStackTrace();
                 }
                 if (delete)
-                    DBTools.getInstance(mContext).deleteCondition(HistoryAllBean.class, "tomatoMsg", childBean.getName());
+//                    try {
+//                        long startTime = simpleDateFormat.parse(childBean.getFirstTime()).getTime();
+//                        Log.d("HistoryAdapter", "startTime:" + startTime);
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+
+                        DBTools.getInstance(mContext).deleteCondition(HistoryAllBean.class, "tomatoMsg", childBean.getName());
                 Intent intent = new Intent("refurbish");
                 mContext.sendBroadcast(intent);
                 delete = true;
