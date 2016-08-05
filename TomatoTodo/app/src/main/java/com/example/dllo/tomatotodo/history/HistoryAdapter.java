@@ -1,13 +1,18 @@
 package com.example.dllo.tomatotodo.history;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
+import com.example.dllo.tomatotodo.db.DBTools;
 import com.example.dllo.tomatotodo.db.HistoryAllBean;
 
 import java.text.SimpleDateFormat;
@@ -142,7 +147,7 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
 
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         TimeHolder timeHolder = null;
         if (convertView == null) {
@@ -156,7 +161,56 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
         timeHolder.historyFirstTime.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getFirstTime());
         timeHolder.historyLastTime.setText(beanListMap.get(groupBeen.get(groupPosition).getDate()).get(childPosition).getLastTime());
 
+
+        final TimeHolder finalTimeHolder = timeHolder;
+
+
+        timeHolder.historyDelete.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                final List<HistoryChildBean> historyChildBeens = beanListMap.get(groupBeen.get(groupPosition).getDate());
+                final HistoryChildBean historyChildBean = historyChildBeens.get(childPosition);
+
+                Snackbar.make(finalTimeHolder.historyDelete, "已删除", Snackbar.LENGTH_LONG).setAction("撤销删除", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        historyChildBeens.add(childPosition, historyChildBean);
+                        delete = false;
+                        //DBTools.getInstance(context).insertSingle(potatolistChildData);
+                        notifyDataSetChanged();
+                    }
+                }).setActionTextColor(Color.RED).show();
+
+                deleteFromDb(historyChildBean);
+                historyChildBeens.remove(historyChildBean);
+                notifyDataSetChanged();
+            }
+        });
+
         return convertView;
+    }
+
+    public boolean delete = true;
+
+    public void deleteFromDb(final HistoryChildBean childBean) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (delete)
+                    DBTools.getInstance(mContext).deleteCondition(HistoryAllBean.class, "tomatoMsg", childBean.getName());
+                Intent intent = new Intent("refurbish");
+                mContext.sendBroadcast(intent);
+                delete = true;
+            }
+        }).start();
     }
 
     @Override
@@ -178,12 +232,14 @@ public class HistoryAdapter extends BaseExpandableListAdapter {
     class TimeHolder {
 
         TextView historyFirstTime, historyLastTime, historyName;
+        ImageView historyDelete;
 
         public TimeHolder(View view) {
             super();
             historyFirstTime = (TextView) view.findViewById(R.id.item_history_first_time);
             historyLastTime = (TextView) view.findViewById(R.id.item_history_last_time);
             historyName = (TextView) view.findViewById(R.id.item_history_name);
+            historyDelete = (ImageView) view.findViewById(R.id.item_history_delete_iv);
         }
     }
 

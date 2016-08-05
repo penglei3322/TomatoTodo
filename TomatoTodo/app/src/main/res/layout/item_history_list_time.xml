@@ -41,4 +41,13 @@
         android:textColor="@color/colorHistoryTimeLayoutNameTextColor"
         android:textSize="@dimen/item_history_time_text_size" />
 
+    <ImageView
+        android:id="@+id/item_history_delete_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_action_cancel"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
 </RelativeLayout>

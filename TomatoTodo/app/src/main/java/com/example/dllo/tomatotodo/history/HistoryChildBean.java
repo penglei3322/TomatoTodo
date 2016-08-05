@@ -1,10 +1,15 @@
 package com.example.dllo.tomatotodo.history;
 
+import com.litesuits.orm.db.annotation.PrimaryKey;
+import com.litesuits.orm.db.enums.AssignType;
+
 /**
  * Created by dllo on 16/8/1.
  */
 public class HistoryChildBean {
 
+    @PrimaryKey(AssignType.AUTO_INCREMENT)
+    private int id;
     private String firstTime;
     private String lastTime;
     private String name;
@@ -41,5 +46,13 @@ public class HistoryChildBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

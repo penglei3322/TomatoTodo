@@ -1,8 +1,10 @@
 package com.example.dllo.tomatotodo.history;
 
 
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -37,6 +39,8 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     private ArrayList<HistoryAllBean> arrayListThisMonth;
     private FrameLayout mFrameLayout;
 
+    private DeleteBroadcastReceiver deleteBroadcastReceiver;
+
     @Override
     public int createView() {
         return R.layout.fragment_history;
@@ -59,6 +63,15 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         leftTv.setOnClickListener(this);
         rightTv.setOnClickListener(this);
 
+        deleteBroadcastReceiver = new DeleteBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refurbish");
+        context.registerReceiver(deleteBroadcastReceiver, intentFilter);
+
+        setList();
+    }
+
+    private void setList() {
 
         arrayListThisMonth = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
@@ -88,6 +101,12 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        context.unregisterReceiver(deleteBroadcastReceiver);
+    }
+
 
     private void setExpandableListView() {
 
@@ -104,9 +123,6 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
-                ShowAlertDialog();
-
                 return false;
             }
         });
@@ -206,9 +222,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 arrayListThisMonth.add(historyAllBean);
 
             }
-
         }
-
         if (arrayListThisMonth.size() == 0) {
             mExpandableListView.setVisibility(View.GONE);
             mFrameLayout.setVisibility(View.VISIBLE);
@@ -223,19 +237,11 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
-    private void ShowAlertDialog() {
+    class DeleteBroadcastReceiver extends BroadcastReceiver {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("删除");
-        builder.setMessage("您可以点击确定来删除这条历史记录");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                
-            }
-        });
-        builder.setNegativeButton("取消", null);
-        builder.show();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setList();
+        }
     }
 }
