@@ -140,6 +140,7 @@ public class TomatoService extends Service {
                     showNotification(-1);
                     stopTick();
                     playAlert();
+
                 }
             }
         }.start();

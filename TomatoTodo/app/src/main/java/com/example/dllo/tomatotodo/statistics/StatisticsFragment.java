@@ -49,6 +49,8 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
     private CustomClock mCustomClock;
     //分享的广播接收者
     private ShareReceiver receiver;
+    //服务广播接收者
+    private CompleteReceiver receiverComplete;
 
     @Override
     public int createView() {
@@ -86,14 +88,20 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
             }
         });
 
-    }
-
-    @Override
-    public void initData() {
         //注册分享广播
         receiver = new ShareReceiver();
         IntentFilter filter =new IntentFilter("share");
         context.registerReceiver(receiver,filter);
+
+        receiverComplete = new CompleteReceiver();
+        IntentFilter filterCom = new IntentFilter("refreshView");
+        context.registerReceiver(receiverComplete,filterCom);
+
+    }
+
+    @Override
+    public void initData() {
+
 
         mHashHistogram = new HashMap<>();
         //添加HashMap
@@ -382,6 +390,7 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
     public void onDestroy() {
         super.onDestroy();
         context.unregisterReceiver(receiver);
+        context.unregisterReceiver(receiverComplete);
     }
 
     class ShareReceiver extends BroadcastReceiver{
@@ -389,6 +398,15 @@ public class StatisticsFragment extends BaseFragment implements View.OnClickList
         public void onReceive(Context context, Intent intent) {
             Log.d("ShareReceiver", "收到了分享广播");
             BitmapUtils.viewSaveToImage(mScrollView);
+        }
+    }
+
+    class CompleteReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("CompleteReceiver", "222:" + 222);
+            initData();
         }
     }
 

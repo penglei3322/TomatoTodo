@@ -153,9 +153,7 @@ public class ObjectiveActivity extends BaseActivity {
         getLastTwelveWeekData(); // 过去12周
         getLastTwelveMonthData(); // 过去12个月
 
-        getCurrentDayData(); // 获取本周数据
-        getCurrentWeekData(); // 获取本月数据
-        getCurrentMonthData(); // 获取本月数据
+
 
     }
 
@@ -170,6 +168,11 @@ public class ObjectiveActivity extends BaseActivity {
         mEveryDayObject.setText("每日目标: "+objectDay+"");
         mEveryWeekObject.setText("每周目标: "+objectWeek+"");
         mEveryMonthObject.setText("每月目标: "+objectMonth+"");
+
+        getCurrentDayData(); // 获取本周数据
+        getCurrentWeekData(); // 获取本月数据
+        getCurrentMonthData(); // 获取本月数据
+
 
     }
 

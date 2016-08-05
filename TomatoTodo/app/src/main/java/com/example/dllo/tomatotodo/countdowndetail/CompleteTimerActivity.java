@@ -67,6 +67,8 @@ public class CompleteTimerActivity extends BaseActivity implements View.OnClickL
                 myBinder.startRestCountDown();
                 DBTools.getInstance(this).insertSingle(new HistoryAllBean(myBinder.getStartWorkTime(),
                         System.currentTimeMillis(),editText.getText().toString()));
+                Intent intent = new Intent("refreshView");
+                sendBroadcast(intent);
 
                 finish();
                 break;

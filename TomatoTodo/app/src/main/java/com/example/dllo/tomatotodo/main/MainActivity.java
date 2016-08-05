@@ -30,12 +30,12 @@ import android.widget.TextView;
 
 import com.example.dllo.tomatotodo.R;
 import com.example.dllo.tomatotodo.base.BaseActivity;
+import com.example.dllo.tomatotodo.countdowndetail.CompleteTimerActivity;
 import com.example.dllo.tomatotodo.countdowndetail.CountdownDetailActivity;
 import com.example.dllo.tomatotodo.history.HistoryFragment;
 import com.example.dllo.tomatotodo.potatolist.PotatoListFragment;
 import com.example.dllo.tomatotodo.potatolist.activity.PotatoListDetailActivity;
 import com.example.dllo.tomatotodo.preferences.PreferencesActivity;
-import com.example.dllo.tomatotodo.service.CompleteTimerActivity;
 import com.example.dllo.tomatotodo.service.CountDownEvent;
 import com.example.dllo.tomatotodo.service.TomatoService;
 import com.example.dllo.tomatotodo.statistics.StatisticsFragment;
