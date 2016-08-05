@@ -1,6 +1,10 @@
 package com.example.dllo.tomatotodo.history;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -35,6 +39,8 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     private ArrayList<HistoryAllBean> arrayListThisMonth;
     private FrameLayout mFrameLayout;
 
+    private DeleteBroadcastReceiver deleteBroadcastReceiver;
+
     @Override
     public int createView() {
         return R.layout.fragment_history;
@@ -57,6 +63,15 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         leftTv.setOnClickListener(this);
         rightTv.setOnClickListener(this);
 
+        deleteBroadcastReceiver = new DeleteBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("refurbish");
+        context.registerReceiver(deleteBroadcastReceiver, intentFilter);
+
+        setList();
+    }
+
+    private void setList() {
 
         arrayListThisMonth = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
@@ -86,6 +101,12 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        context.unregisterReceiver(deleteBroadcastReceiver);
+    }
+
 
     private void setExpandableListView() {
 
@@ -97,6 +118,12 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 return true;
+            }
+        });
+        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                return false;
             }
         });
     }
@@ -195,9 +222,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
                 arrayListThisMonth.add(historyAllBean);
 
             }
-
         }
-
         if (arrayListThisMonth.size() == 0) {
             mExpandableListView.setVisibility(View.GONE);
             mFrameLayout.setVisibility(View.VISIBLE);
@@ -212,5 +237,11 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
+    class DeleteBroadcastReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setList();
+        }
+    }
 }

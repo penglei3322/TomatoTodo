@@ -25,6 +25,8 @@ public class CoreService extends Service {
     private static final int delayMillis = 1000;
 
     private Context mContext;
+
+    // 系统中所有运行着的Activity交互提供了接口
     private ActivityManager mActivityManager;
 
     private Handler mHandler;
@@ -41,6 +43,7 @@ public class CoreService extends Service {
 
             String packageName = null;
 
+            // ComponentName（组件名称）是用来打开其他应用程序中的Activity或服务的
             ComponentName componentName = TopActivityUtils.getTopActivity(mContext, mActivityManager);
 
             if (componentName != null) {
@@ -57,7 +60,7 @@ public class CoreService extends Service {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
-
+            // 要做的事情，这里再次调用此Runnable对象，以实现每一秒实现一次的定时器操作
             mHandler.postDelayed(mRunnable, delayMillis);
         }
     };
@@ -75,6 +78,7 @@ public class CoreService extends Service {
         mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 
         mHandler = new Handler();
+        // 要做的事情，这里再次调用此Runnable对象，以实现每一秒实现一次的定时器操作
         mHandler.postDelayed(mRunnable, delayMillis);
 
         Logger.getLogger().i("onCreate");
